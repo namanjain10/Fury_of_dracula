@@ -1,5 +1,10 @@
+typedef int Encounter;
 
-
+#define NO_ENCOUNTER           -1
+#define TRAP                    0
+#define VAMPIRE                 1
+#define DRACULA                 2
+ 
 typedef int PlaceType;
 
 #define UNKNOWN                  0

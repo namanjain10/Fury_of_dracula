@@ -90,6 +90,15 @@ Place* getPlaces () {
    return places;
 }
 
+char* getAbbrev (LocationID loc, Place* place) {
+    char* a = place[loc].abbrev;
+    return  a;
+}
+
+PlaceType getPlaceType (LocationID loc, Place* place) {
+    return place[loc].type ;
+}
+
 // int main () {
 //
 // cout << places[0].name << endl ;

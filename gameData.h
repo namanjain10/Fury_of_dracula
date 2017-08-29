@@ -15,4 +15,4 @@ void lifeGainRest (PlayerID x,int* health);
 void incrementRound (int* round);
 
 
-void registerBestPlay( char *play, PlayerMessage message );
+//void registerBestPlay( char *play, PlayerMessage message );

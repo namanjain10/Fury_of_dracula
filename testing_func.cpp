@@ -1,10 +1,10 @@
 #include <iostream>
 #include <string.h>
 #include <assert.h>
-// #include "map.h"
+#include "map.h"
 // #include "Globals.h"
 // #include "trail.h"
-// #include "places.h"
+#include "places.h"
 #include "GameView.h"
 using namespace std;
 
@@ -41,17 +41,22 @@ int main () {
     // c += a ;
     // c += b ;
 
-    char pastPlays[] = "GMN.... SPL.... HAM.... MPA.... DCA.V.. GLV.... SLO.... HNS.... MST.... DCGT... GIR.... SPL.... HAO.... MZU.... DCDT... GSW.... SLO.... HNS.... MFR.... DCNT... GLV.... SPL.... HAO.... MZU.... DCOT... GSW.... SLO.... HNS.... " ;
-    cout << "here \n" << strlen(pastPlays) << " " << pastPlays[222]<< endl;
-    GameView a = newGameView (pastPlays);
-    //cout << "here10 \n";
+    // char pastPlays[] = "GMN.... SPL.... HAM.... MPA.... DCA.V.. GLV.... SLO.... HNS.... MST.... DCGT... GIR.... SPL.... HAO.... MZU.... DCDT... GSW.... SLO.... HNS.... MFR.... DCNT... GLV.... SPL.... HAO.... MZU.... DCOT... GSW.... SLO.... HNS.... " ;
+    // cout << "here \n" << strlen(pastPlays) << " " << pastPlays[222]<< endl;
+    // GameView a = newGameView (pastPlays);
+    // //cout << "here10 \n";
+    //
+    // cout << a->current << endl;
+    // cout << "here \n";
+    //
+    // for (int i=0; i<5; i++) {
+    //     //cout << "here \n";
+    //     printTrail (a->huntTrail[i]);
+    // }
+    Place* a = new Place[71];
+    getPlaces (a);
+    char const* y = getAbbrev (3,a);
 
-    cout << a->current << endl;
-    cout << "here \n";
-
-    for (int i=0; i<5; i++) {
-        //cout << "here \n";
-        printTrail (a->huntTrail[i]);
-    }
+    cout << y << endl;
     return 0 ;
 }
