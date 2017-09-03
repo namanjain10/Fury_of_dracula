@@ -1,10 +1,14 @@
+//#include "list.h"
+#include "stack.h"
+//#include "trail.h"
+
 typedef int Encounter;
 
 #define NO_ENCOUNTER           -1
 #define TRAP                    0
 #define VAMPIRE                 1
 #define DRACULA                 2
- 
+
 typedef int PlaceType;
 
 #define UNKNOWN                  0
@@ -115,13 +119,22 @@ typedef int LocationID;
 #define UNKNOWN_LOCATION        -1
 #define NOWHERE                 UNKNOWN_LOCATION
 
-struct graphNode;
-struct GraphRep;
+struct graphNode {
+	LocationID location;
+	TransportID mode ;
+	graphNode* next;
+};
+
+struct GraphRep {
+	int nV;
+	graphNode** arr;
+};
 
 void constMap (GraphRep* g);
 void printGraph (GraphRep* g);
 void addLink (GraphRep* a, LocationID from, LocationID to, TransportID x);
 GraphRep* newGraph (int x);
 void printList (GraphRep* a, LocationID x);
-
-//List* MST (GraphRep* a, LocationID x);
+//List* MST (GraphRep* a, LocationID x, LocationID loc);
+Stack* shortestPathHunter (GraphRep* a, LocationID x, LocationID loc);
+Stack* shortestPathDrac (GraphRep* a, LocationID x, LocationID loc);

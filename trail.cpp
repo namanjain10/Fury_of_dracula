@@ -1,6 +1,6 @@
 // not covering 3 encounter at a location
 
-#include "map.h"
+//#include "map.h"
 #include "Globals.h"
 #include "places.h"
 #include <iostream>
@@ -12,7 +12,7 @@ typedef char encounter ;
 
 // struct TrailNode {
 //     LocationID val;
-//     Encounter trap;
+//     Queue* trap;
 //     TrailNode* next;
 // };
 //
@@ -39,9 +39,10 @@ Trail* newTrail () {
     a->start = NULL;
     a->end = NULL;
     a->currentSize = 0;
+    a->trap = newQueue (6);
     a->size = 6;
-    a->nHides = 0;
-    a->nDoubleBack = 0;
+    // a->nHides = 0;
+    // a->nDoubleBack = 0;
     return a;
 }
 
@@ -49,8 +50,11 @@ Trail* newTrail () {
 void push (Trail* a) {
 
     TrailNode* node = new TrailNode;
-    node->val = UNKNOWN_LOCATION;
-    node->trap = NO_ENCOUNTER;
+    node->val = NOWHERE;
+
+    for (int i=0; i<6; i++) {
+        node->trap = NO_ENCOUNTER;
+    }
     node->next = NULL;
 
     if (a->start == NULL) {
@@ -69,17 +73,17 @@ State* pushToTrail (Trail* a, LocationID k, Encounter t) {
     State* s = new State;
 
     Encounter q = -1;
-    int h = checkHide (a,k);
-
-    if (h == HIDE) {
-        a->nHides = a->nHides + 1;
-    }
-
-    else if (h == DOUBLE_BACK_1 || h == DOUBLE_BACK_2 || h == DOUBLE_BACK_3 || h == DOUBLE_BACK_4 || h == DOUBLE_BACK_5) {
-        a->nDoubleBack = a->nDoubleBack + 1;
-    }
-
-    assert (a->nHides < 3 && a->nDoubleBack < 3);
+    // int h = checkHide (a,k);
+    //
+    // if (h == HIDE) {
+    //     a->nHides = a->nHides + 1;
+    // }
+    //
+    // else if (h == DOUBLE_BACK_1 || h == DOUBLE_BACK_2 || h == DOUBLE_BACK_3 || h == DOUBLE_BACK_4 || h == DOUBLE_BACK_5) {
+    //     a->nDoubleBack = a->nDoubleBack + 1;
+    // }
+    //
+    // assert (a->nHides < 3 && a->nDoubleBack < 3);
 
     if (a->currentSize == a->size) {
         q = popTrail(a);
@@ -140,7 +144,7 @@ void printTrail (Trail* a) {
     cout << "yes\n";
     TrailNode* add = a->start;
     cout << "yes\n";
-    Place* places = getPlaces ();
+
     cout << "yes\n";
     while (add != NULL) {
         //cout << places[add->val].id << " < ";
@@ -169,6 +173,7 @@ int checkHide (Trail* a, LocationID loc) {
                 break;
             }
             count ++;
+            add = add->next;
         }
             if (q == 1) {
 

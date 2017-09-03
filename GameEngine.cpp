@@ -1,4 +1,5 @@
 #include <string.h>
+#include <assert.h>
 #include "map.h"
 #include "places.h"
 #include "trail.h"
@@ -10,39 +11,42 @@ using namespace std;
 
 int main () {
 
-cout << "gvuvhb" << endl;
-gameData* data = newGameData ();
-cout << "gvuvhb" << endl;
+    gameData* data = newGameData ();
 
-PlayerID currentPlayer = 0;
-int turn = 0;
-int loc = 1;
+    PlayerID currentPlayer = 0;
+    int turn = 0;
+    int loc = 1;
 
-cout << "gvuvhb" << endl;
+    while (turn < 200) {//gameContinue(data) ) {
+        if (loc == 71) {
+            loc = 0;
+        }
+        //cout << "gvuvhb3" << endl;
+        currentPlayer = turn%5 ;
 
-while (turn < 16) {//gameContinue(data) ) {
-    cout << "gvuvhb" << endl;
-    currentPlayer = turn%5 ;
+        if (currentPlayer == PLAYER_DRACULA) {
+            // DracView view = newDracView (pastplaysDrac);
+            // char* result = DracAI (view);
+            makeMove (currentPlayer, loc, TRAP, data);
+            cout << "dracula" << endl;
+            //cout << data->pastPlaysHunter << endl;//strlen(data->pastPlaysHunter)<< endl ;
+            //cout << data->pastPlaysDrac << endl;//strlen(data->pastPlaysDrac) << endl ;
+        }
 
-    if (currentPlayer == PLAYER_DRACULA) {
-        // DracView view = newDracView (pastplaysDrac);
-        // char* result = DracAI (view);
-        makeMove (currentPlayer, TRAP, loc, data);
-        cout << "gvuvhb" << endl;
+        else {
+            // HunterView view = newHunterView (pastPlaysHunter);
+            // char* result = HunterAI (view);
+            makeMove (currentPlayer, loc, NO_ENCOUNTER, data);
+            cout << "hunter" << endl;
+            //cout << data->pastPlaysHunter << endl;//strlen(data->pastPlaysHunter)<< endl ;
+            //cout << data->pastPlaysDrac << endl;//strlen(data->pastPlaysDrac) << endl ;
+        }
+
+        //evaluate (result,currentPlayer);
+        loc ++;
+        turn ++;
     }
 
-    else {
-        // HunterView view = newHunterView (pastPlaysHunter);
-        // char* result = HunterAI (view);
-        makeMove (currentPlayer, NO_ENCOUNTER, loc, data);
-        cout << "gvuvhb" << endl;
-    }
-
-    //evaluate (result,currentPlayer);
-    loc ++;
-    turn ++;
-}
-
-cout << data->pastPlaysHunter << endl ;
-cout << data->pastPlaysDrac << endl ;
+    cout << data->pastPlaysHunter << endl ;
+    cout << data->pastPlaysDrac << endl ;
 }

@@ -2,22 +2,25 @@
 #include <iostream>
 #include <assert.h>
 #include "Globals.h"
+#include "list.h"
+#include "pqueue.h"
+//#include "stack.h"
 
 using namespace std;
 
 int validV (GraphRep* g, LocationID v);
 int sameEdge (GraphRep* a, LocationID from, LocationID to, TransportID x);
 
-struct graphNode {
-	LocationID location;
-	TransportID mode ;
-	graphNode* next;
-};
-
-struct GraphRep {
-	int nV;
-	graphNode** arr;
-};
+// struct graphNode {
+// 	LocationID location;
+// 	TransportID mode ;
+// 	graphNode* next;
+// };
+//
+// struct GraphRep {
+// 	int nV;
+// 	graphNode** arr;
+// };
 
 void constMap (GraphRep* g) {
 
@@ -311,7 +314,7 @@ int sameEdge (GraphRep* a, LocationID from, LocationID to, TransportID x) {
 
     while (add != NULL) {
 
-        if (add->location == to) {
+        if (add->location == to && add->mode == x) {
             return 0;
         }
         add = add->next;
@@ -324,38 +327,171 @@ int sameEdge (GraphRep* a, LocationID from, LocationID to, TransportID x) {
 //     List* list = newList() ;
 //     Pqueue* queue = newPqueue() ;
 //
+// 	pushPqueue(queue, a->arr[x]->location, 0, a->arr[x]->mode);
+//
 //     graphNode* add = a->arr[x]->next;
 //
-//     int p = a->arr[x]->mode;
+//     int p = 0;
 //     PqueueNode* w;
 //
 //     int count = 0;
 //
 //     while (count != a->nV) {
-//         cout << "entering\n";
+//
+//         //cout << "entering\n";
 //
 //         while (add != NULL) {
 //
-//             if (checkPqueue(queue,add->location,p + add->mode) == 0 && checkList (list, add->location, p + add->mode) == 0) {
+//             if (checkPqueue(queue,add->location, add->mode) == 0 && checkList (list, add->location, add->mode) == 0) {
 //
-//                 pushPqueue(queue, add->location, p + add->mode);
-//                 cout << "pushed " ;
-//                 printPqueue(queue);
+//                 pushPqueue(queue, add->location, p+1 ,add->mode);
+//                 //cout << "pushed " ;
+//                 //printPqueue(queue);
 //             }
 //             add = add->next;
 //         }
-//         cout << "out\n";
+//         //cout << "out\n";
 //
 //         w = popPqueue(queue);
-//         printPqueue(queue);
+//         //printPqueue(queue);
 //         add = a->arr[w->val]->next;
 //         p = w->priority;
 //
-//         pushList(list, w->val, w->priority);
-//         printList(list) ;
-//
+//         pushList(list, w->val, w->priority, w->mode);
+//         //printList(list) ;
 //         count++;
 //     }
 //
 //     return list;
 // }
+
+Stack* shortestPathHunter (GraphRep* a, LocationID x, LocationID loc) {
+
+    List* list = newList() ;
+    Pqueue* queue = newPqueue() ;
+
+	pushPqueue(queue, a->arr[x]->location, 0, a->arr[x]->mode, -1);
+
+    graphNode* add = a->arr[x]->next;
+
+    int p = 0;
+    PqueueNode* w;
+	int prev = x;
+
+    int count = 0;
+
+    while (count <= 70) {
+
+        while (add != NULL) {
+
+            if (checkPqueue(queue,add->location, add->mode) == 0 && checkList (list, add->location, add->mode) == 0) {
+                pushPqueue(queue, add->location, p+1 ,add->mode, prev);
+            }
+            add = add->next;
+        }
+
+        w = popPqueue(queue);
+
+		if (w->val == loc) {
+			break;
+		}
+
+		pushList(list, w->val, w->priority, w->mode, w->prev);
+
+        add = a->arr[w->val]->next;
+		prev = w->val;
+        p = w->priority;
+		count ++;
+    }
+
+	int y = w->prev;
+
+	Stack* path = newStack();
+	pushStack (path, loc);
+	pushStack (path,y);
+
+	while (y != x) {
+
+		y = prevList(list,y);
+		pushStack (path, y);
+	}
+
+    return path;
+}
+
+Stack* shortestPathDrac (GraphRep* a, LocationID x, LocationID loc) {
+
+    List* list = newList() ;
+    Pqueue* queue = newPqueue() ;
+
+	pushPqueue(queue, a->arr[x]->location, 0, a->arr[x]->mode, -1);
+
+    graphNode* add = a->arr[x]->next;
+
+    int p = 0;
+    PqueueNode* w;
+	int prev = x;
+
+    int count = 0;
+
+    while (count <= 70) {
+
+        while (add != NULL) {
+
+			if (add->location != ST_JOSEPH_AND_ST_MARYS) {
+
+				if (add->mode == ROAD) {
+
+	            	if (checkPqueue(queue,add->location, add->mode) == 0 && checkList (list, add->location, add->mode) == 0) {
+						pushPqueue(queue, add->location, p + 1,add->mode, prev);
+	            	}
+	            	add = add->next;
+				}
+
+				else if (add->mode == BOAT) {
+
+					if (checkPqueue(queue,add->location, add->mode) == 0 && checkList (list, add->location, add->mode) == 0) {
+						pushPqueue(queue, add->location, p + 15, add->mode, prev);
+	            	}
+
+	            	add = add->next;
+				}
+
+				else {
+					add = add->next;
+				}
+        	}
+
+			else {
+				add = add->next;
+			}
+		}
+
+    	w = popPqueue(queue);
+
+		if (w->val == loc) {
+			break;
+		}
+
+		pushList(list, w->val, w->priority, w->mode, w->prev);
+
+        add = a->arr[w->val]->next;
+		prev = w->val;
+        p = w->priority;
+
+		count ++;
+    }
+
+	int y = w->prev;
+
+	Stack* path = newStack();
+	pushStack (path, loc);
+	pushStack (path,y);
+
+	while (y != x) {
+		y = prevList(list,y);
+		pushStack (path, y);
+	}
+
+    return path;
+}

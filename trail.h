@@ -1,4 +1,4 @@
-#include "map.h"
+//#include "map.h"
 #include "Globals.h"
 
 // struct TrailNode;
@@ -7,7 +7,7 @@
 
 struct TrailNode {
     LocationID val;
-    Encounter trap;
+    Queue* trap;
     TrailNode* next;
 };
 
@@ -15,8 +15,6 @@ struct Trail {
     TrailNode* start;
     TrailNode* end;
     int size;
-    int nHides;
-    int nDoubleBack;
     int currentSize;
 };
 

@@ -16,7 +16,8 @@ using namespace std;
 //     int* health;
 //     LocationID location[NUM_PLAYERS];
 //     PlayerID current;
-//     Trail** huntTrail;
+//     Trail* huntTrail;
+//     int bloodPt;
 // };
 
 GameView newGameView(char *pastPlays) {
@@ -26,39 +27,33 @@ GameView newGameView(char *pastPlays) {
     a->map = m;
     constMap(m);
 
-    Place* places = getPlaces();
+    a->round = 0;
+    a->score = GAME_START_SCORE;
+    a->bloodPt = GAME_START_BLOOD_POINTS;
+
+    for (int i = 0; i<NUM_PLAYERS-1; i++) {
+
+        a->health[i] = GAME_START_HUNTER_LIFE_POINTS;
+        a->location[i] = NOWHERE;
+        //a->hide[i] = 0;
+     }
+
+    int n = pastPlays.length();
+    int r = n/8;
+
+    a->huntTrail = new Trail;
+
+    for (int j = 0; j<6; j++) {
+        push(a->huntTrail);
+    }
 
     int i = 0;
     int chance = 0;
 
-    a->round = 0;
-    a->score = GAME_START_SCORE;
-
-    a->health = init_health();
-
-    int n = strlen(pastPlays);
-    int r = n/8;
-
-    a->huntTrail = new Trail* [NUM_PLAYERS];
-    cout << NUM_PLAYERS << "\n";
-
-    for (int k=0; k<NUM_PLAYERS; k++) {
-        a->huntTrail[k] = newTrail();
-        cout << "here \n";
-
-        for (int j = 0; j<6; j++) {
-            pushToTrail(a->huntTrail[k], UNKNOWN_LOCATION);
-        }
-    }
-
-    a->location = init_location();
-    //cout << "here0 \n";
-
     while (chance != r) {
-        //cout << i << endl;
+
         if (i%8 == 0) {
-            //cout << "here1 \n";
-            cout << i << endl;
+
             if (pastPlays[i] == 'G') {a->current = PLAYER_LORD_GODALMING; }
             else if (pastPlays[i] == 'S') {a->current = PLAYER_DR_SEWARD; }
             else if (pastPlays[i] == 'H') {a->current = PLAYER_VAN_HELSING; }
@@ -67,24 +62,37 @@ GameView newGameView(char *pastPlays) {
                 a->current = PLAYER_DRACULA ;
                 a->round = a->round + 1;
             }
-            cout << a->current << endl;
             i++ ;
         }
 
         else if (i%8 == 1){
             //cout << "here2 \n";
             //cout << i << endl;
-            string c = "";
-            c += pastPlays[i] ;
-            c += pastPlays[i+1] ;
+            char* c = new char [2];
+            c[0] = pastPlays[i] ;
+            c[1] = pastPlays[i+1] ;
 
-            for (int k=0; k<71; k++) {
-                if (places[k].abbrev == c) {
-                    pushToTrail(a->huntTrail[a->current], places[k].id);
-                    a->location[a->current] = places[k].id;
+            if (a->current == PLAYER_DRACULA) {
+
+                if (strcmp("S?",c)) {
+
                 }
+
+                else if (strcmp("C?",c)) {
+
+                }
+
+                else {
+                    for (int k=0; k<71; k++) {
+
+                        if (getAbbrev(k) == c) {
+
+                            a->location[a->current] = k;
+                        }
+                    }
+                }
+                i += 2;
             }
-            i += 2;
         }
 
         else if (i%8 == 3) {
@@ -121,7 +129,7 @@ GameView newGameView(char *pastPlays) {
         }
 
         else {
-            
+
             if (i%8 == 7) {
                 chance++;
             }
@@ -134,39 +142,40 @@ GameView newGameView(char *pastPlays) {
 //
 // char pastPlays[] = "GMN.... SPL.... HAM.... MPA.... DC?.V.. GLV.... SLO.... HNS.... MST.... DC?T... GIR.... SPL.... HAO.... MZU.... DCDT... GSW.... SLO.... HNS.... MFR.... DC?T... GLV.... SPL.... HAO.... MZU.... DC?T... GSW.... SLO.... HNS.... " ;
 
-void disposeGameView(GameView toBeDeleted) {
-    assert (toBeDeleted != NULL);
-    delete toBeDeleted;
-}
 
-Round getRound(GameView currentView) {
-    assert (currentView != NULL);
-    return currentView->round;
-}
-
-PlayerID getCurrentPlayer(GameView currentView) {
-    assert (currentView != NULL);
-    return currentView->current;
-}
-
-int getScore(GameView currentView) {
-    assert (currentView != NULL);
-    return currentView->score;
-}
-
-int getHealth(GameView currentView, PlayerID player) {
-    assert (currentView != NULL);
-    return currentView->health[player];
-}
-
-LocationID getLocation(GameView currentView, PlayerID player) {
-    assert (currentView != NULL);
-    return currentView->hunters[player];
-}
-
-
-void getHistory(GameView currentView, PlayerID player, LocationID trail[TRAIL_SIZE]);
-
-
-LocationID *connectedLocations(GameView currentView, int *numLocations, LocationID from,
-                                PlayerID player, Round round, int road, int rail, int sea);
+// void disposeGameView(GameView toBeDeleted) {
+//     assert (toBeDeleted != NULL);
+//     delete toBeDeleted;
+// }
+//
+// Round getRound(GameView currentView) {
+//     assert (currentView != NULL);
+//     return currentView->round;
+// }
+//
+// PlayerID getCurrentPlayer(GameView currentView) {
+//     assert (currentView != NULL);
+//     return currentView->current;
+// }
+//
+// int getScore(GameView currentView) {
+//     assert (currentView != NULL);
+//     return currentView->score;
+// }
+//
+// int getHealth(GameView currentView, PlayerID player) {
+//     assert (currentView != NULL);
+//     return currentView->health[player];
+// }
+//
+// LocationID getLocation(GameView currentView, PlayerID player) {
+//     assert (currentView != NULL);
+//     return currentView->hunters[player];
+// }
+//
+//
+// void getHistory(GameView currentView, PlayerID player, LocationID trail[TRAIL_SIZE]);
+//
+//
+// LocationID *connectedLocations(GameView currentView, int *numLocations, LocationID from,
+//                                 PlayerID player, Round round, int road, int rail, int sea);

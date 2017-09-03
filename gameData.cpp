@@ -3,15 +3,15 @@
 #include "Globals.h"
 #include "gameData.h"
 
-int* init_health () {
-    int* health = new int[NUM_PLAYERS-1]{GAME_START_HUNTER_LIFE_POINTS, GAME_START_HUNTER_LIFE_POINTS, GAME_START_HUNTER_LIFE_POINTS, GAME_START_HUNTER_LIFE_POINTS};
-    return health;
-}
-
-PlayerID* init_location () {
-    PlayerID* a = new PlayerID[NUM_PLAYERS]{NOWHERE, NOWHERE, NOWHERE, NOWHERE, NOWHERE};
-    return a;
-}
+// int* init_health () {
+//     int health[] = {GAME_START_HUNTER_LIFE_POINTS, GAME_START_HUNTER_LIFE_POINTS, GAME_START_HUNTER_LIFE_POINTS, GAME_START_HUNTER_LIFE_POINTS};
+//     return health;
+// }
+//
+// PlayerID* init_location () {
+//     PlayerID a = {NOWHERE, NOWHERE, NOWHERE, NOWHERE, NOWHERE};
+//     return a;
+// }
 
 void decreaseScoreVampire (int* score) {
     *score = *score - SCORE_LOSS_VAMPIRE_MATURES;

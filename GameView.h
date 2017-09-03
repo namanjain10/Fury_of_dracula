@@ -17,10 +17,11 @@ struct gameView {
     GraphRep* map;
     Round round;
     int score;
-    int* health;
+    int health[NUM_PLAYERS-1];
     LocationID location[NUM_PLAYERS];
     PlayerID current;
-    Trail** huntTrail;
+    int bloodPt;
+    Trail* huntTrail;
 };
 
 // newGameView() creates a new game view to summarise the current state of

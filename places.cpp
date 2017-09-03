@@ -1,7 +1,5 @@
-#include "map.h"
 #include "Globals.h"
 #include "places.h"
-#include <string.h>
 
 // struct Place {
 //    string      name;
@@ -10,9 +8,7 @@
 //    PlaceType  type;
 // } ;
 
-Place* getPlaces () {
-
-    Place* places = new Place [71]{
+static Place places[] = {
 
         {"Adriatic Sea", "AS", ADRIATIC_SEA, SEA},
        {"Alicante", "AL", ALICANTE, LAND},
@@ -87,22 +83,20 @@ Place* getPlaces () {
        {"Zurich", "ZU", ZURICH, LAND},
    };
 
-   return places;
+char* getAbbrev (LocationID loc) {
+    string a = places[loc].abbrev;
+    char* b = new char[2];
+    strcpy(b,a.c_str());
+    return  b;
 }
 
-char* getAbbrev (LocationID loc, Place* place) {
-    char* a = place[loc].abbrev;
-    return  a;
+PlaceType getPlaceType (LocationID loc) {
+    return places[loc].type ;
 }
 
-PlaceType getPlaceType (LocationID loc, Place* place) {
-    return place[loc].type ;
+char* getName (LocationID loc) {
+    string a = places[loc].name;
+    char* b = new char[2];
+    strcpy(b,a.c_str());
+    return  b;
 }
-
-// int main () {
-//
-// cout << places[0].name << endl ;
-// cout << places[0].id << endl ;
-//
-// return 0;
-// }

@@ -1,14 +1,15 @@
-#include <string.h>
+#include "map.h"
 #include <iostream>
+
 using namespace std;
 
 struct Place {
-   char* name;
-   char* abbrev;
+   string name;
+   string abbrev;
    LocationID id;
    PlaceType type;
 } ;
 
-Place* getPlaces () ;
-char* getAbbrev (LocationID loc, Place* place);
-PlaceType getPlaceType (LocationID loc, Place* place);
+char* getAbbrev (LocationID loc);
+PlaceType getPlaceType (LocationID loc);
+char* getName (LocationID loc);
