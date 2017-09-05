@@ -10,7 +10,9 @@
 //#include "GameView.h"
 //#include "stack.h"
 
-#include "gameController.h"
+//#include "gameController.h"
+#include "map.h"
+
 using namespace std;
 
 int main () {
@@ -30,7 +32,10 @@ int main () {
     GraphRep* a = newGraph(71);
     constMap (a);
 
-    // Stack* l = shortestPathDrac (a, NAPLES, LISBON);
-    // printStack (l);
+    Stack* l = shortestPathHunter (a, NAPLES, LISBON);
+    printStack (l);
+
+    int y = minimumDistance (a, NAPLES, LISBON);
+    cout << y << endl;
     return 0 ;
 }

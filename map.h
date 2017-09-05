@@ -1,6 +1,10 @@
+#ifndef MAP_H
+#define MAP_H
+
 //#include "list.h"
 #include "stack.h"
 //#include "trail.h"
+#include "Globals.h"
 
 typedef int Encounter;
 
@@ -129,7 +133,13 @@ struct GraphRep {
 	int nV;
 	graphNode** arr;
 };
-
+int minimumDistance (GraphRep* a, LocationID x, LocationID y);
+void bloodLossHunter (int* health);
+void bloodLossSea (int* health);
+void bloodGainCastle (int* health);
+void lifeLossTrap (PlayerID x, int* health);
+void lifeLossDrac (PlayerID x, int* health);
+void lifeGainRest (PlayerID x,int* health);
 void constMap (GraphRep* g);
 void printGraph (GraphRep* g);
 void addLink (GraphRep* a, LocationID from, LocationID to, TransportID x);
@@ -138,3 +148,5 @@ void printList (GraphRep* a, LocationID x);
 //List* MST (GraphRep* a, LocationID x, LocationID loc);
 Stack* shortestPathHunter (GraphRep* a, LocationID x, LocationID loc);
 Stack* shortestPathDrac (GraphRep* a, LocationID x, LocationID loc);
+
+#endif

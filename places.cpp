@@ -1,6 +1,6 @@
 #include "Globals.h"
 #include "places.h"
-
+#include <string.h>
 // struct Place {
 //    string      name;
 //    string      abbrev;

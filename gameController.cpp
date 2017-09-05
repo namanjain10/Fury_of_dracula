@@ -266,7 +266,7 @@ bool isValid (gameData* data, LocationID to, PlayerID player) {
 
     else {
         cout << "player\n";
-        int u = (data->score + player)%4 ;
+        int u = (data->round + player)%4 ;
         //int u = (score + player)%4 ;
         cout << u << endl;
         if (u == 0) {
@@ -350,46 +350,6 @@ string getFirstLetter (PlayerID player) {
     else {
         return "D";
     }
-}
-
-void decreaseScoreVampire (int* score) {
-    *score = *score - SCORE_LOSS_VAMPIRE_MATURES;
-}
-
-void decreaseScoreHunterHospital (int* score) {
-    *score = *score - SCORE_LOSS_HUNTER_HOSPITAL;
-}
-
-void decreaseScoreDraculaTurn(int* score) {
-    *score = *score - SCORE_LOSS_DRACULA_TURN;
-}
-
-void bloodLossHunter (int* bloodPt) {
-    *bloodPt = *bloodPt - LIFE_LOSS_HUNTER_ENCOUNTER;
-}
-
-void bloodLossSea (int* bloodPt) {
-    *bloodPt = *bloodPt - LIFE_LOSS_SEA;
-}
-
-void bloodGainCastle (int* bloodPt) {
-    *bloodPt = *bloodPt + LIFE_GAIN_CASTLE_DRACULA;
-}
-
-void lifeLossTrap (PlayerID x, int* health) {
-    health[x] = health[x] - LIFE_LOSS_TRAP_ENCOUNTER;
-}
-
-void lifeLossDrac (PlayerID x, int* health) {
-    health[x] = health[x] - LIFE_LOSS_DRACULA_ENCOUNTER;
-}
-
-void lifeGainRest (PlayerID x,int* health) {
-    health[x] = health[x] + LIFE_GAIN_REST;
-}
-
-void incrementRound (int* round) {
-    *round = *round + 1;
 }
 
 bool checkRail (LocationID from, LocationID to, int u, GraphRep* map) {

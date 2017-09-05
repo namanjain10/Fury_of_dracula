@@ -6,16 +6,14 @@ using namespace std;
 typedef struct dracView* Dracview ;
 
 struct dracView {
-
     Gameview gameView;
-    encounter
 };
 
 DracView newDracView(char *pastPlays) {
     DracView view = new dracView;
     assert (view != NULL);
     view->gameView = newGameView (pastPlays);
-
+    return view;
 }
 
 void disposeDracView(DracView toBeDeleted) {
@@ -25,31 +23,40 @@ void disposeDracView(DracView toBeDeleted) {
 
 Round giveMeTheRound(DracView currentView) {
     assert (currentView != NULL);
-    return currentView->round;
+    return getRound(currentView->view);
 }
 
 int giveMeTheScore(DracView currentView) {
     assert (currentView != NULL);
-    return currentView->score;
+    return getScore(currentView->view);
 }
 
 int howHealthyIs(DracView currentView, PlayerID player) {
     assert (currentView != NULL);
-    return currentView->health[PlayerID];
+    return getHealth(currentView->view, player);
 }
 
 LocationID whereIs(DracView currentView, PlayerID player) {
     assert (currentView != NULL);
-    return currentView->hunters[player];
+    return getLocation(currentView->view,player);
 }
 
-void lastMove(DracView currentView, PlayerID player, LocationID *start, LocationID *end);
+void lastMove(DracView currentView, PlayerID player, LocationID *start, LocationID *end) {
 
-void whatsThere(DracView currentView, LocationID where, int *numTraps, int *numVamps);
+}
 
-void giveMeTheTrail(DracView currentView, PlayerID player, LocationID trail[TRAIL_SIZE]);
+void whatsThere(DracView currentView, LocationID where, int *numTraps, int *numVamps) {
 
-LocationID *whereCanIgo(DracView currentView, int *numLocations, int road, int sea);
+}
 
-LocationID *whereCanTheyGo(DracView currentView, int *numLocations, PlayerID player, int road,
-                                int rail, int sea);
+void giveMeTheTrail(DracView currentView, PlayerID player, LocationID trail[TRAIL_SIZE]) {
+
+}
+
+LocationID *whereCanIgo(DracView currentView, int *numLocations, int road, int sea) {
+
+}
+
+LocationID *whereCanTheyGo(DracView currentView, int *numLocations, PlayerID player, int road, int rail, int sea) {
+
+}

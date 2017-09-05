@@ -28,13 +28,3 @@ void makeMove (PlayerID player, LocationID loc, Encounter trap, gameData* data) 
 bool checkRail (LocationID from, LocationID to, int u, GraphRep* map);
 
 bool isValid (gameData* data, LocationID to, PlayerID player);
-void decreaseScoreVampire (int* score);
-void decreaseScoreHunterHospital (int* score);
-void decreaseScoreDraculaTurn(int* score);
-void bloodLossHunter (int* bloodPt);
-void bloodLossSea (int* bloodPt);
-void bloodGainCastle (int* bloodPt);
-void lifeLossTrap (PlayerID x, int* health);
-void lifeLossDrac (PlayerID x, int* health);
-void lifeGainRest (PlayerID x,int* health);
-void incrementRound (int* round);

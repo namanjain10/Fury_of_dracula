@@ -1,5 +1,6 @@
 #include <iostream>
 using namespace std;
+#include "queue.h"
 
 // struct QueueNode {
 //     int val;
@@ -44,7 +45,7 @@ Queue* newQueue (int k) {
 }
 
 // push at end
-void pushQueue (Queue* a, int k) {
+void pushQueue (Queue* a, int k, int p) {
 
     if (a->currentSize == a->size) {
         popQueue(a);
@@ -52,6 +53,7 @@ void pushQueue (Queue* a, int k) {
 
     struct QueueNode* node = new QueueNode;
     node->val = k;
+    node->place = p;
     node->next = NULL;
 
     if (a->start == NULL) {

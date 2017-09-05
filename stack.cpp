@@ -3,7 +3,8 @@
 #include <assert.h>
 //#include "places.h"
 using namespace std;
-
+#define TRUE 1
+#define FALSE 0
 // struct Stack {
 //     struct StackNode* start;
 //     struct StackNode* end;
@@ -13,11 +14,7 @@ using namespace std;
 //     int val;
 //     struct StackNode* next;
 // };
-//
-// Stack* newStack ();
-// void push (struct Stack* a, int k);
-// void pop (struct Stack* a);
-// void print (struct Stack* a) ;
+
 // push at start
 
 Stack* newStack () {
@@ -67,4 +64,16 @@ void printStack (Stack* a) {
         add = add->next;
     }
     cout << endl;
+}
+
+bool notInStack (Stack* a, int c) {
+    StackNode* add = a->start;
+
+    while (add != NULL) {
+        if (add->val == c) {
+            return FALSE;
+        }
+        add = add->next;
+    }
+    return TRUE;
 }

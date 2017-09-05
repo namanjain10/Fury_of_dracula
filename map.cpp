@@ -322,48 +322,50 @@ int sameEdge (GraphRep* a, LocationID from, LocationID to, TransportID x) {
     return 1;
 }
 
-// List* MST (GraphRep* a, LocationID x) {
-//
-//     List* list = newList() ;
-//     Pqueue* queue = newPqueue() ;
-//
-// 	pushPqueue(queue, a->arr[x]->location, 0, a->arr[x]->mode);
-//
-//     graphNode* add = a->arr[x]->next;
-//
-//     int p = 0;
-//     PqueueNode* w;
-//
-//     int count = 0;
-//
-//     while (count != a->nV) {
-//
-//         //cout << "entering\n";
-//
-//         while (add != NULL) {
-//
-//             if (checkPqueue(queue,add->location, add->mode) == 0 && checkList (list, add->location, add->mode) == 0) {
-//
-//                 pushPqueue(queue, add->location, p+1 ,add->mode);
-//                 //cout << "pushed " ;
-//                 //printPqueue(queue);
-//             }
-//             add = add->next;
-//         }
-//         //cout << "out\n";
-//
-//         w = popPqueue(queue);
-//         //printPqueue(queue);
-//         add = a->arr[w->val]->next;
-//         p = w->priority;
-//
-//         pushList(list, w->val, w->priority, w->mode);
-//         //printList(list) ;
-//         count++;
-//     }
-//
-//     return list;
-// }
+int minimumDistance (GraphRep* a, LocationID x, LocationID y) {
+
+    List* list = newList() ;
+    Pqueue* queue = newPqueue() ;
+
+	pushPqueue(queue, a->arr[x]->location, 0, a->arr[x]->mode, -1);
+
+    graphNode* add = a->arr[x]->next;
+
+    int p = 0;
+    PqueueNode* w;
+
+    int count = 0;
+
+    while (count != a->nV) {
+
+        //cout << "entering\n";
+
+        while (add != NULL) {
+
+            if (checkPqueue(queue,add->location, add->mode) == 0 && checkList (list, add->location, add->mode) == 0) {
+
+                pushPqueue(queue, add->location, p+1 ,add->mode,-1);
+                //cout << "pushed " ;
+                //printPqueue(queue);
+            }
+            add = add->next;
+        }
+
+        w = popPqueue(queue);
+
+        if (w->val == y) {
+			break;
+		}
+        //printPqueue(queue);
+        add = a->arr[w->val]->next;
+        p = w->priority;
+
+        pushList(list, w->val, w->priority, w->mode, -1);
+        count++;
+    }
+
+    return w->priority;
+}
 
 Stack* shortestPathHunter (GraphRep* a, LocationID x, LocationID loc) {
 
@@ -494,4 +496,28 @@ Stack* shortestPathDrac (GraphRep* a, LocationID x, LocationID loc) {
 	}
 
     return path;
+}
+
+void bloodLossHunter (int* health) {
+    health[PLAYER_DRACULA] = health[PLAYER_DRACULA] - LIFE_LOSS_HUNTER_ENCOUNTER;
+}
+
+void bloodLossSea (int* health) {
+    health[PLAYER_DRACULA] = health[PLAYER_DRACULA] - LIFE_LOSS_SEA;
+}
+
+void bloodGainCastle (int* health) {
+    health[PLAYER_DRACULA] = health[PLAYER_DRACULA] + LIFE_GAIN_CASTLE_DRACULA;
+}
+
+void lifeLossTrap (PlayerID x, int* health) {
+    health[x] = health[x] - LIFE_LOSS_TRAP_ENCOUNTER;
+}
+
+void lifeLossDrac (PlayerID x, int* health) {
+    health[x] = health[x] - LIFE_LOSS_DRACULA_ENCOUNTER;
+}
+
+void lifeGainRest (PlayerID x,int* health) {
+    health[x] = health[x] + LIFE_GAIN_REST;
 }

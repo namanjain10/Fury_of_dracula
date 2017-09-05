@@ -5,23 +5,30 @@
 #ifndef GAME_VIEW_H
 #define GAME_VIEW_H
 
+#define MESSAGE_SIZE 100
+#define LIMIT_LIMIT_MSECS 1500
+
 #include "map.h"
-#include "trail.h"
+//#include "trail.h"
 #include "Globals.h"
+#include "queue.h"
 //#include "placeString.h"
+#include <iostream>
+using namespace std;
 
 typedef struct gameView *GameView;
+typedef string PlayerMessage;
 
 struct gameView {
 
     GraphRep* map;
     Round round;
     int score;
-    int health[NUM_PLAYERS-1];
+    int health[NUM_PLAYERS];
     LocationID location[NUM_PLAYERS];
     PlayerID current;
-    int bloodPt;
-    Trail* huntTrail;
+    Queue* trap;
+    Queue** huntTrail;
 };
 
 // newGameView() creates a new game view to summarise the current state of
@@ -38,8 +45,7 @@ struct gameView {
 // The "PlayerMessage" type is defined in game.h.
 // You are free to ignore messages if you wish.
 
-GameView newGameView(char *pastPlays);
-
+GameView newGameView(char *pastPlays, PlayerMessage messages[]);
 
 // disposeGameView() frees all memory previously allocated for the GameView
 // toBeDeleted. toBeDeleted should not be accessed after the call.
@@ -96,7 +102,6 @@ int getHealth(GameView currentView, PlayerID player);
 
 LocationID getLocation(GameView currentView, PlayerID player);
 
-
 //// Functions that return information about the history of the game
 
 // Fills the trail array with the location ids of the last 6 turns
@@ -122,7 +127,6 @@ LocationID getLocation(GameView currentView, PlayerID player);
 void getHistory(GameView currentView, PlayerID player,
                  LocationID trail[TRAIL_SIZE]);
 
-
 //// Functions that query the map to find information about connectivity
 
 // connectedLocations() returns an array of LocationID that represent
@@ -139,13 +143,5 @@ void getHistory(GameView currentView, PlayerID player,
 LocationID *connectedLocations(GameView currentView, int *numLocations,
                                LocationID from, PlayerID player, Round round,
                                int road, int rail, int sea);
-
-//gets the turn number
-int giveMeTurnNumber(GameView g);
-
-//returns the map so that people can look at it
-GraphRep* getGameMap (GameView g);
-
-int getIsDead(GameView currentView, PlayerID player);
 
 #endif

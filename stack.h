@@ -12,3 +12,4 @@ Stack* newStack ();
 void pushStack (Stack* a, int k);
 void popStack (Stack* a);
 void printStack (Stack* a) ;
+bool notInStack (Stack* a, int c);
