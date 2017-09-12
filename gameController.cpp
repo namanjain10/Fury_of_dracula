@@ -1,13 +1,14 @@
 #include <string.h>
 //#include "map.h"
 #include <assert.h>
-//#include "places.h"
+#include "places.h"
 //#include "trail.h"
 #include "Globals.h"
 #include "gameController.h"
 #include "list.h"
 #include "pqueue.h"
-//#include "gameData.h"
+//#include "queue.h"
+
 using namespace std;
 
 // struct gameData {
@@ -26,9 +27,17 @@ using namespace std;
 //     int hide[NUM_PLAYERS] ;
 // };
 
-//bool isValid (LocationID a, LocationID b, GraphRep* map);
-int inTrail (Trail* a, LocationID loc);
+int inTrail (Queue* a, LocationID loc);
 string getFirstLetter (PlayerID player);
+// string revealDracPos (string a, Queue* b, PlayerID player, int n) ;
+bool checkHide (Queue* a);
+bool checkDoubleBack (Queue* a);
+QueueNode* getTrailElement (Queue* currentView, LocationID location);
+
+
+QueueNode* getTrailElement (Queue* currentView, LocationID location) {
+    return findNode (currentView, location);
+}
 
 gameData* newGameData () {
 
@@ -36,9 +45,10 @@ gameData* newGameData () {
     a->map = newGraph(71);
     constMap(a->map);
 
-    a->round = 0;
+    a->round = -1;
     a->score = GAME_START_SCORE;
-    a->bloodPt = GAME_START_BLOOD_POINTS;
+    a->health[PLAYER_DRACULA] = GAME_START_BLOOD_POINTS;
+    a->location[PLAYER_DRACULA] = NOWHERE;
 
     for (int i = 0; i<NUM_PLAYERS-1; i++) {
 
@@ -49,10 +59,10 @@ gameData* newGameData () {
 
      a->hide[PLAYER_DRACULA] = 0;
 
-    a->dracTrail = newTrail();
+    a->dracTrail = newQueue(TRAIL_SIZE);
 
     for (int j = 0; j<6; j++) {
-        push(a->dracTrail);
+        pushQueue (a->dracTrail,UNKNOWN_LOCATION, -1, -1, -1);
     }
 
     a->pastPlaysHunter = new char[1];
@@ -61,10 +71,11 @@ gameData* newGameData () {
     return a;
 }
 
-void makeMove (PlayerID player, LocationID loc, Encounter trap, gameData* data) {
+void makeMove (PlayerID player, LocationID loc,  gameData* data) {
+    cout << "entered move\n";
 
     if (data->location[player] == loc) {
-
+        //cout << "same\n" << endl;
         data->hide[player] = 1;
         lifeGainRest (player, data->health);
 
@@ -82,14 +93,19 @@ void makeMove (PlayerID player, LocationID loc, Encounter trap, gameData* data) 
         }
 
         if (q == 1) {
-            data->pastPlaysHunter = revealDracPos (data->pastPlaysHunter, data->trail, 6);    // unfold the 6th trail position of drac
+            data->pastPlaysHunter = revealDracPos (data->pastPlaysHunter, data->dracTrail, player, 6);
         }
+        //cout << "first\n";
     }
 
     else {
         data->hide[player] = 0;
     }
 
+    if (player == PLAYER_LORD_GODALMING) {
+        data->round ++;
+    }
+    cout << "ordered me " << loc << endl;
     assert (isValid (data, loc, player)) ;  // to be made return boolean if move is valid
 
     if (player != PLAYER_DRACULA) {
@@ -122,80 +138,186 @@ void makeMove (PlayerID player, LocationID loc, Encounter trap, gameData* data) 
 
             data->pastPlaysHunter += ha;
             data->pastPlaysDrac += ta;
-
-            cout << data->pastPlaysHunter << endl;//strlen(data->pastPlaysHunter)<< endl ;
-            cout << data->pastPlaysDrac << endl;//strlen(data->pastPlaysDrac) << endl ;
-
         }
 
         else {
-            data->pastPlaysHunter = revealDracPos (data->pastPlaysHunter, data->trail, q);
-            Queue e = getTrap (data->trail, q);
+            cout << "entered in else q is " << q << "\n";
+            data->pastPlaysHunter = revealDracPos (data->pastPlaysHunter, data->dracTrail, player, q);
+            //cout << "first\n";
 
-            if (e == TRAP) {
-                lifeLossTrap (data->)
+            QueueNode* e = getTrailElement (data->dracTrail, loc);
+            //cout << "second\n";
+
+            string play = getFirstLetter (player);
+            char* fir = new char[1];
+            strcpy (fir,play.c_str());
+
+            //cout << "third\n";
+            char* r = getAbbrev(loc);
+
+            char* h = new char[8];
+            char* t = new char[8];
+
+            strcpy (h,fir);
+            strcpy (t,fir);
+
+            strcat (h,r);
+            strcat (t,r);
+            //cout << "fourth\n";
+            int y = 0;
+
+            if (e->nT > 0) {
+                //cout << "mid\n";
+                int c = e->nT;
+                //cout << "fifth\n";
+
+                while (c != 0) {
+                    lifeLossTrap (player, data->health);
+
+                    if (data->health[player] <= 0) {
+                        data->location[player] = ST_JOSEPH_AND_ST_MARYS;
+                        data->score = data->score - SCORE_LOSS_HUNTER_HOSPITAL;
+                        break;
+                    }
+                    c--;
+                }
+
+                e->nT = c;
+
+                strcat (h,"T");
+                strcat (t,"T");
+                y++;
+            }
+            //cout << "seventh\n";
+
+            if (e->nV > 0) {
+                e->nV = 0;
+                strcat (h,"V");
+                strcat (t,"V");
+                y++;
             }
 
-            else if (e == VAMPIRE) {
-                removeVampire (data->trail, q);
+            if (data->location[PLAYER_DRACULA] == loc) {
 
+                if (getPlaceType(loc) != SEA) {
+
+                    bloodLossHunter (data->health);
+                    lifeLossDrac (player, data->health);
+
+                    if (data->health[player] <= 0) {
+                        data->location[player] = ST_JOSEPH_AND_ST_MARYS;
+                        data->score = data->score - SCORE_LOSS_HUNTER_HOSPITAL;
+                    }
+
+                    strcat (h,"D");
+                    strcat (t,"D");
+                    y++;
+                }
             }
+
+            for (int i=0; i<3-y; i++) {
+                strcat (h,".");
+                strcat (t,".");
+            }
+            //cout << "ninth\n";
+
+            strcat (h,". ");
+            strcat (t,". ");
+
+            string ha = h;
+            string ta = t;
+
+            data->pastPlaysHunter += ha;
+            data->pastPlaysDrac += ta;
         }
     }
 
     else {
+        cout << "entered drac\n";
 
-        State* state = pushToTrail (data->dracTrail, loc, trap);
+        Encounter trap;
+
+        if (data->round %13 == 0) {
+            trap = VAMPIRE;
+        }
+
+        else {
+            trap = TRAP;
+        }
+
+
+        cout << "lets \n";
+        int t = data->dracTrail->start->nT;
+        cout << "ok done\n";
+        int v = data->dracTrail->start->nV;
+
+        printQueue (data->dracTrail);
+cout << "ok done\n";
+        if (trap == TRAP) {
+            pushQueue (data->dracTrail, loc, getPlaceType(loc), 1, 0);
+        }
+
+        else if (trap == VAMPIRE) {
+            pushQueue (data->dracTrail, loc, getPlaceType(loc), 0, 1);
+        }
+cout << "ok done\n";
         char* hu = new char[8];
         char* d = new char[8];
 
         strcpy (hu,"D");
         strcpy (d,"D");
 
-        if (state->hides == HIDE) {
+        int q = inTrail (data->dracTrail, loc);
+        q = TRAIL_SIZE - q ;
+
+        if (q == 0) {
             strcat (d,"HI");
-            strcat (hu, "C?");
+            strcat (hu,"C?");
         }
 
-        else if (state->hides == DOUBLE_BACK_1) {
+        else if (q == 1) {
             strcat (hu,"D1");
             strcat (d,"D1");
         }
 
-        else if (state->hides == DOUBLE_BACK_2) {
+        else if (q == 2) {
             strcat (hu,"D2");
             strcat (d,"D2");
         }
 
-        else if (state->hides == DOUBLE_BACK_3) {
+        else if (q == 3) {
              strcat (hu,"D3");
              strcat (d,"D3");
         }
 
-        else if (state->hides == DOUBLE_BACK_4) {
+        else if (q == 4) {
              strcat (hu,"D4");
              strcat (d,"D4");
         }
 
-        else if (state->hides == DOUBLE_BACK_5) {
+        else if (q == 5) {
             strcat (hu,"D5");
             strcat (d,"D5");
         }
 
         else {
+
             PlaceType pla = getPlaceType(loc);
 
             if (pla == LAND) {
                 strcat (hu,"C?");
+                strcat (d,getAbbrev(loc));
             }
 
             else {
                 strcat (hu,"S?");
-                bloodLossSea (data->bloodPt);
+                strcat (d,getAbbrev(loc));
+                bloodLossSea (data->health);
             }
         }
 
-        strcat (d,getAbbrev(loc));
+cout << "ok done\n";
+        data->location[PLAYER_DRACULA] = loc;
 
         if (trap == TRAP) {
             strcat(hu, "T");
@@ -206,7 +328,7 @@ void makeMove (PlayerID player, LocationID loc, Encounter trap, gameData* data) 
             strcat(hu,".");
             strcat(d,".");
         }
-
+cout << "ok done\n";
         if (trap == VAMPIRE) {
             strcat(hu,"V");
             strcat(d,"V");
@@ -216,9 +338,27 @@ void makeMove (PlayerID player, LocationID loc, Encounter trap, gameData* data) 
             strcat(hu,".");
             strcat(d,".");
         }
+cout << "ok done\n";
+        printQueue (data->dracTrail);
 
-        strcat(hu,".. ");
-        strcat(d,".. ");
+        if (t > 0) {
+            strcat(hu,"M");
+            strcat(d,"M");
+        }
+
+        else if (v > 0) {
+            data->score = data->score - SCORE_LOSS_VAMPIRE_MATURES;
+            strcat(hu,"V");
+            strcat(d,"V");
+        }
+
+        else {
+            strcat(hu,".");
+            strcat(d,".");
+        }
+cout << "ok done\n";
+        strcat(hu,". ");
+        strcat(d,". ");
 
         string ha = hu;
         string ta = d;
@@ -226,20 +366,38 @@ void makeMove (PlayerID player, LocationID loc, Encounter trap, gameData* data) 
         data->pastPlaysHunter += ha;
         data->pastPlaysDrac += ta;
 
-        cout << "2222222\n";
-        cout << data->pastPlaysHunter << endl;
-        cout << data->pastPlaysDrac << endl;
+        data->score = data->score - SCORE_LOSS_DRACULA_TURN;
      }
 }
 
 bool isValid (gameData* data, LocationID to, PlayerID player) {
 
+    if (data->location[player] == NOWHERE) {
+        return TRUE;
+    }
+
     graphNode* add = data->map->arr[data->location[player]];
-    //graphNode* add = map->arr[from];
+
     int r = 0;
+    int q = inTrail (data->dracTrail, to);
 
     if (player == PLAYER_DRACULA) {
         cout << "Dracula\n";
+
+        if (data->location[PLAYER_DRACULA] == to) {
+            if (getPlaceType(to) == SEA) {
+                cout << "cant hide in sea\n";
+                return FALSE;
+            }
+
+            else {
+                return (checkHide (data->dracTrail));
+            }
+        }
+
+        if (q != -1) {
+            return (checkDoubleBack (data->dracTrail));
+        }
 
         while (add != NULL) {
             if (add->location == to) {
@@ -250,11 +408,13 @@ bool isValid (gameData* data, LocationID to, PlayerID player) {
         }
 
         if (r == 0) {
+            cout << "cant find path\n";
             return FALSE;
         }
 
         else {
             if (add->mode == RAIL) {
+                cout << "cant go in rail \n";
                 return FALSE;
             }
 
@@ -266,24 +426,30 @@ bool isValid (gameData* data, LocationID to, PlayerID player) {
 
     else {
         cout << "player\n";
+        //cout << "is it??\n";
         int u = (data->round + player)%4 ;
         //int u = (score + player)%4 ;
         cout << u << endl;
+
         if (u == 0) {
+            cout << "is it??\n";
 
             while (add != NULL) {
                 if (add->location == to) {
+                    cout << add->location << endl;
                     r = 1;
                     break;
                 }
                 add = add->next;
             }
-
+            cout << "is it??\n";
             if (r == 0) {
+                cout << "false\n";
                 return FALSE;
             }
 
             else {
+                cout << "true\n";
                 if (add->mode == RAIL) {
                     return FALSE;
                 }
@@ -322,11 +488,21 @@ bool isValid (gameData* data, LocationID to, PlayerID player) {
             else {
                 return TRUE;
             }
+        }
     }
 }
-}
 
-int inTrail (Trail* a, LocationID loc) {
+int inTrail (Queue* a, LocationID loc) {
+    QueueNode* add = a->start;
+    int count = 1;
+
+    while (add != NULL) {
+        if (add->val == loc) {
+            return count;
+        }
+        count ++;
+        add = add->next;
+    }
     return -1;
 }
 
@@ -411,13 +587,67 @@ bool checkRail (LocationID from, LocationID to, int u, GraphRep* map) {
     }
 }
 
-string revealDracPos (string a, Trail* b, PlayerID player, int n) {
+string revealDracPos (string a, Queue* b, PlayerID player, int n) {
 
-    if (b->start->val != NOWHERE) {
+    QueueNode* add = b->start;
 
-        char* s = getAbbrev (b->start->val);
-        a[a.length() - (8*(player+2) + 40*(n-1)) + 1] = s[0];
-        a[a.length() - (8*(player+2) + 40*(n-1)) + 2] = s[1];
+    int i = 0;
+
+    while (i < n-1) {
+        add = add->next;
+        i++;
     }
+
+    if (add->val == NOWHERE) {
+        return a;
+    }
+
+    char* s = getAbbrev (add->val);
+
+    a[a.length() - (8*(player+1) + 40*(TRAIL_SIZE - n)) + 1] = s[0];
+    a[a.length() - (8*(player+1) + 40*(TRAIL_SIZE - n)) + 2] = s[1];
+
     return a;
+}
+
+bool checkHide (Queue* a) {
+    QueueNode* add = a->start->next;
+    QueueNode* prev = NULL;
+    int hide = 0;
+
+    while (add != NULL) {
+
+        if (prev->val == add->val) {
+            cout << "cant hide twice in trail\n";
+            return FALSE;
+        }
+
+        prev = add;
+        add = add->next;
+    }
+
+    return TRUE;
+}
+
+bool checkDoubleBack (Queue* a) {
+    QueueNode* add = a->start->next;
+    QueueNode* prev = add;
+
+    while (add != NULL) {
+        prev = add->next->next;
+        while (prev != NULL) {
+            if (prev->val == add->val && prev->val != NOWHERE) {
+                cout << "cant double back twice\n";
+                return FALSE;
+            }
+            prev = prev->next;
+        }
+        add = add->next;
+    }
+
+    return TRUE;
+}
+
+bool gameContinue (gameData* data) {
+    return (data->health[PLAYER_DRACULA] > 0 && data->score > 0);
 }

@@ -4,6 +4,7 @@
 #include "Globals.h"
 #include "list.h"
 #include "pqueue.h"
+#include "places.h"
 //#include "stack.h"
 
 using namespace std;
@@ -23,6 +24,52 @@ int sameEdge (GraphRep* a, LocationID from, LocationID to, TransportID x);
 // };
 
 void constMap (GraphRep* g) {
+    //### RAIL Connections ###
+
+    addLink(g, ALICANTE, BARCELONA, RAIL);
+    addLink(g, ALICANTE, MADRID, RAIL);
+    addLink(g, BARCELONA, SARAGOSSA, RAIL);
+    addLink(g, BARI, NAPLES, RAIL);
+    addLink(g, BELGRADE, SOFIA, RAIL);
+    addLink(g, BELGRADE, SZEGED, RAIL);
+    addLink(g, BERLIN, HAMBURG, RAIL);
+    addLink(g, BERLIN, LEIPZIG, RAIL);
+    addLink(g, BERLIN, PRAGUE, RAIL);
+    addLink(g, BORDEAUX, PARIS, RAIL);
+    addLink(g, BORDEAUX, SARAGOSSA, RAIL);
+    addLink(g, BRUSSELS, COLOGNE, RAIL);
+    addLink(g, BRUSSELS, PARIS, RAIL);
+    addLink(g, BUCHAREST, CONSTANTA, RAIL);
+    addLink(g, BUCHAREST, GALATZ, RAIL);
+    addLink(g, BUCHAREST, SZEGED, RAIL);
+    addLink(g, BUDAPEST, SZEGED, RAIL);
+    addLink(g, BUDAPEST, VIENNA, RAIL);
+    addLink(g, COLOGNE, FRANKFURT, RAIL);
+    addLink(g, EDINBURGH, MANCHESTER, RAIL);
+    addLink(g, FLORENCE, MILAN, RAIL);
+    addLink(g, FLORENCE, ROME, RAIL);
+    addLink(g, FRANKFURT, LEIPZIG, RAIL);
+    addLink(g, FRANKFURT, STRASBOURG, RAIL);
+    addLink(g, GENEVA, MILAN, RAIL);
+    addLink(g, GENOA, MILAN, RAIL);
+    addLink(g, LEIPZIG, NUREMBURG, RAIL);
+    addLink(g, LE_HAVRE, PARIS, RAIL);
+    addLink(g, LISBON, MADRID, RAIL);
+    addLink(g, LIVERPOOL, MANCHESTER, RAIL);
+    addLink(g, LONDON, MANCHESTER, RAIL);
+    addLink(g, LONDON, SWANSEA, RAIL);
+    addLink(g, MADRID, SANTANDER, RAIL);
+    addLink(g, MADRID, SARAGOSSA, RAIL);
+    addLink(g, MARSEILLES, PARIS, RAIL);
+    addLink(g, MILAN, ZURICH, RAIL);
+    addLink(g, MUNICH, NUREMBURG, RAIL);
+    addLink(g, NAPLES, ROME, RAIL);
+    addLink(g, PRAGUE, VIENNA, RAIL);
+    addLink(g, SALONICA, SOFIA, RAIL);
+    addLink(g, SOFIA, VARNA, RAIL);
+    addLink(g, STRASBOURG, ZURICH, RAIL);
+    addLink(g, VENICE, VIENNA, RAIL);
+
 
    addLink(g, ALICANTE, GRANADA, ROAD);
    addLink(g, ALICANTE, MADRID, ROAD);
@@ -140,51 +187,6 @@ void constMap (GraphRep* g) {
    addLink(g, SZEGED, ZAGREB, ROAD);
    addLink(g, VIENNA, ZAGREB, ROAD);
 
-   //### RAIL Connections ###
-
-   addLink(g, ALICANTE, BARCELONA, RAIL);
-   addLink(g, ALICANTE, MADRID, RAIL);
-   addLink(g, BARCELONA, SARAGOSSA, RAIL);
-   addLink(g, BARI, NAPLES, RAIL);
-   addLink(g, BELGRADE, SOFIA, RAIL);
-   addLink(g, BELGRADE, SZEGED, RAIL);
-   addLink(g, BERLIN, HAMBURG, RAIL);
-   addLink(g, BERLIN, LEIPZIG, RAIL);
-   addLink(g, BERLIN, PRAGUE, RAIL);
-   addLink(g, BORDEAUX, PARIS, RAIL);
-   addLink(g, BORDEAUX, SARAGOSSA, RAIL);
-   addLink(g, BRUSSELS, COLOGNE, RAIL);
-   addLink(g, BRUSSELS, PARIS, RAIL);
-   addLink(g, BUCHAREST, CONSTANTA, RAIL);
-   addLink(g, BUCHAREST, GALATZ, RAIL);
-   addLink(g, BUCHAREST, SZEGED, RAIL);
-   addLink(g, BUDAPEST, SZEGED, RAIL);
-   addLink(g, BUDAPEST, VIENNA, RAIL);
-   addLink(g, COLOGNE, FRANKFURT, RAIL);
-   addLink(g, EDINBURGH, MANCHESTER, RAIL);
-   addLink(g, FLORENCE, MILAN, RAIL);
-   addLink(g, FLORENCE, ROME, RAIL);
-   addLink(g, FRANKFURT, LEIPZIG, RAIL);
-   addLink(g, FRANKFURT, STRASBOURG, RAIL);
-   addLink(g, GENEVA, MILAN, RAIL);
-   addLink(g, GENOA, MILAN, RAIL);
-   addLink(g, LEIPZIG, NUREMBURG, RAIL);
-   addLink(g, LE_HAVRE, PARIS, RAIL);
-   addLink(g, LISBON, MADRID, RAIL);
-   addLink(g, LIVERPOOL, MANCHESTER, RAIL);
-   addLink(g, LONDON, MANCHESTER, RAIL);
-   addLink(g, LONDON, SWANSEA, RAIL);
-   addLink(g, MADRID, SANTANDER, RAIL);
-   addLink(g, MADRID, SARAGOSSA, RAIL);
-   addLink(g, MARSEILLES, PARIS, RAIL);
-   addLink(g, MILAN, ZURICH, RAIL);
-   addLink(g, MUNICH, NUREMBURG, RAIL);
-   addLink(g, NAPLES, ROME, RAIL);
-   addLink(g, PRAGUE, VIENNA, RAIL);
-   addLink(g, SALONICA, SOFIA, RAIL);
-   addLink(g, SOFIA, VARNA, RAIL);
-   addLink(g, STRASBOURG, ZURICH, RAIL);
-   addLink(g, VENICE, VIENNA, RAIL);
 
    //### BOAT Connections ###
 
@@ -322,31 +324,39 @@ int sameEdge (GraphRep* a, LocationID from, LocationID to, TransportID x) {
     return 1;
 }
 
-int minimumDistance (GraphRep* a, LocationID x, LocationID y) {
+int minimumDistanceHunter (GraphRep* a, LocationID x, LocationID y) {
 
     List* list = newList() ;
     Pqueue* queue = newPqueue() ;
+    
+    cout << "x is " << x << endl;
+    cout << "y is " << y << endl;
+
+    cout << "location " << a->arr[x]->location << endl;
+    cout << "mode " << a->arr[x]->mode << endl;
 
 	pushPqueue(queue, a->arr[x]->location, 0, a->arr[x]->mode, -1);
+    cout << "ok mid\n";
 
     graphNode* add = a->arr[x]->next;
+    cout << "ok mid\n";
 
     int p = 0;
     PqueueNode* w;
+    cout << "ok mid\n";
 
     int count = 0;
+    cout << "ok mid\n";
 
     while (count != a->nV) {
 
-        //cout << "entering\n";
+        cout << "entering loop minimumDistanceHunter\n";
 
         while (add != NULL) {
 
             if (checkPqueue(queue,add->location, add->mode) == 0 && checkList (list, add->location, add->mode) == 0) {
-
                 pushPqueue(queue, add->location, p+1 ,add->mode,-1);
                 //cout << "pushed " ;
-                //printPqueue(queue);
             }
             add = add->next;
         }
@@ -363,6 +373,7 @@ int minimumDistance (GraphRep* a, LocationID x, LocationID y) {
         pushList(list, w->val, w->priority, w->mode, -1);
         count++;
     }
+    cout << "ok done\n";
 
     return w->priority;
 }
@@ -453,7 +464,7 @@ Stack* shortestPathDrac (GraphRep* a, LocationID x, LocationID loc) {
 				else if (add->mode == BOAT) {
 
 					if (checkPqueue(queue,add->location, add->mode) == 0 && checkList (list, add->location, add->mode) == 0) {
-						pushPqueue(queue, add->location, p + 15, add->mode, prev);
+						pushPqueue(queue, add->location, p + 2, add->mode, prev);
 	            	}
 
 	            	add = add->next;
@@ -496,6 +507,23 @@ Stack* shortestPathDrac (GraphRep* a, LocationID x, LocationID loc) {
 	}
 
     return path;
+}
+
+int shortestDistanceDrac (GraphRep* a, LocationID x, LocationID loc) {
+
+    Stack* path = shortestPathDrac (a, x, loc);
+
+    StackNode* add = path->start;
+    int c = 0;
+
+    while (add != NULL) {
+        // if (getPlaceType(add->val) == SEA) {
+        //     *s = *s + 2;
+        // }
+        c ++;
+        add = add->next;
+    }
+    return c;
 }
 
 void bloodLossHunter (int* health) {

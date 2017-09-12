@@ -1,6 +1,9 @@
+#ifndef GAME_CONTROLLER_H
+#define GAME_CONTROLLER_H
+
 #include "map.h"
 #include "Globals.h"
-#include "trail.h"
+//#include "queue.h"
 
 #include <iostream>
 
@@ -10,13 +13,12 @@ struct gameData {
 
     GraphRep* map ;
 
-    Trail* dracTrail;
+    Queue* dracTrail;
 
     int score ;
     int round ;
-    int health [NUM_PLAYERS-1] ;
-    int bloodPt ;
-    LocationID location [NUM_PLAYERS-1];
+    int health [NUM_PLAYERS] ;
+    LocationID location [NUM_PLAYERS];
     string pastPlaysHunter;
     string pastPlaysDrac;
     int hide[NUM_PLAYERS] ;
@@ -24,7 +26,10 @@ struct gameData {
 
 gameData* newGameData ();
 
-void makeMove (PlayerID player, LocationID loc, Encounter trap, gameData* data) ;
+void makeMove (PlayerID player, LocationID loc, gameData* data) ;
 bool checkRail (LocationID from, LocationID to, int u, GraphRep* map);
-
+bool gameContinue (gameData* data);
 bool isValid (gameData* data, LocationID to, PlayerID player);
+string revealDracPos (string a, Queue* b, PlayerID player, int n) ;
+
+# endif

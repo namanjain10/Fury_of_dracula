@@ -11,12 +11,12 @@
 #include "map.h"
 //#include "trail.h"
 #include "Globals.h"
-#include "queue.h"
+//#include "queue.h"
 //#include "placeString.h"
 #include <iostream>
 using namespace std;
 
-typedef struct gameView *GameView;
+typedef struct gameView* GameView;
 typedef string PlayerMessage;
 
 struct gameView {
@@ -27,7 +27,7 @@ struct gameView {
     int health[NUM_PLAYERS];
     LocationID location[NUM_PLAYERS];
     PlayerID current;
-    Queue* trap;
+    //Queue* trap;
     Queue** huntTrail;
 };
 
@@ -45,7 +45,7 @@ struct gameView {
 // The "PlayerMessage" type is defined in game.h.
 // You are free to ignore messages if you wish.
 
-GameView newGameView(char *pastPlays, PlayerMessage messages[]);
+GameView newGameView(string pastPlays, PlayerMessage messages[]);
 
 // disposeGameView() frees all memory previously allocated for the GameView
 // toBeDeleted. toBeDeleted should not be accessed after the call.
@@ -140,8 +140,12 @@ void getHistory(GameView currentView, PlayerID player,
 //   the hospital or travel by rail but need not take into account Dracula's trail
 // The destination 'from' should be included in the array
 
-LocationID *connectedLocations(GameView currentView, int *numLocations,
+LocationID* connectedLocations(GameView currentView, int *numLocations,
                                LocationID from, PlayerID player, Round round,
                                int road, int rail, int sea);
+
+QueueNode* getTrailElement (GameView currentView, LocationID location);
+
+GraphRep* getMap (GameView current);
 
 #endif

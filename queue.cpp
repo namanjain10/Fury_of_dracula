@@ -45,7 +45,7 @@ Queue* newQueue (int k) {
 }
 
 // push at end
-void pushQueue (Queue* a, int k, int p) {
+void pushQueue (Queue* a, int k, int p, int t, int v) {
 
     if (a->currentSize == a->size) {
         popQueue(a);
@@ -54,6 +54,9 @@ void pushQueue (Queue* a, int k, int p) {
     struct QueueNode* node = new QueueNode;
     node->val = k;
     node->place = p;
+    node->nT = t;
+    node->nV = v;
+
     node->next = NULL;
 
     if (a->start == NULL) {
@@ -81,8 +84,20 @@ void printQueue (Queue* a) {
     QueueNode* add = a->start;
 
     while (add != NULL) {
-        cout << add->val << " < " ;
+        cout << add->val << " < " ; 
         add = add->next;
     }
     cout << endl;
+}
+
+QueueNode* findNode (Queue* a, int location) {
+    QueueNode* add = a->start;
+
+    while (add != NULL) {
+        if (add->val == location) {
+            return add;
+        }
+        add = add->next;
+    }
+    return NULL;
 }

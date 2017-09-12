@@ -66,6 +66,18 @@ void printStack (Stack* a) {
     cout << endl;
 }
 
+int countStack (Stack* a) {
+
+    StackNode* add = a->start;
+    int count = 0;
+
+    while (add != NULL) {
+        count ++;
+        add = add->next;
+    }
+    return count;
+}
+
 bool notInStack (Stack* a, int c) {
     StackNode* add = a->start;
 

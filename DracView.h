@@ -1,14 +1,17 @@
 // DracView.h
 // Official Interface for DracViewADT
 // COMP1927 14s2
- 
+
 #ifndef DRAC_VIEW_H
 #define DRAC_VIEW_H
 
 #include "Globals.h"
-#include "Game.h"
-#include "Places.h"
-#include "GameView.h"
+//#include "Game.h"
+//#include "places.h"
+#include "gameView.h"
+
+#include <iostream>
+using namespace std;
 
 typedef struct dracView *DracView;
 
@@ -30,14 +33,12 @@ typedef struct dracView *DracView;
 // The "PlayerMessage" type is defined in Game.h.
 // You are free to ignore messages if you wish.
 
-DracView newDracView(char *pastPlays, PlayerMessage messages[]);
-
+DracView newDracView(string pastPlays, PlayerMessage messages[]);
 
 // disposeDracView() frees all memory previously allocated for the DracView
 // toBeDeleted. toBeDeleted should not be accessed after the call.
 
 void disposeDracView(DracView toBeDeleted);
-
 
 // Functions to return simple information about the current state of the game
 
@@ -130,5 +131,10 @@ LocationID *whereCanIgo(DracView currentView, int *numLocations, int road, int s
 
 LocationID *whereCanTheyGo(DracView currentView, int *numLocations,
                            PlayerID player, int road, int rail, int sea);
+
+GraphRep* giveMeMap (DracView currentView);
+
+int minDist (GraphRep* map, LocationID to, LocationID* hunterLoc);
+LocationID initDrac ();
 
 #endif

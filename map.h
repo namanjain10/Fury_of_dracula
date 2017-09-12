@@ -3,7 +3,7 @@
 
 //#include "list.h"
 #include "stack.h"
-//#include "trail.h"
+#include "queue.h"
 #include "Globals.h"
 
 typedef int Encounter;
@@ -133,7 +133,7 @@ struct GraphRep {
 	int nV;
 	graphNode** arr;
 };
-int minimumDistance (GraphRep* a, LocationID x, LocationID y);
+int minimumDistanceHunter (GraphRep* a, LocationID x, LocationID y);
 void bloodLossHunter (int* health);
 void bloodLossSea (int* health);
 void bloodGainCastle (int* health);
@@ -148,5 +148,5 @@ void printList (GraphRep* a, LocationID x);
 //List* MST (GraphRep* a, LocationID x, LocationID loc);
 Stack* shortestPathHunter (GraphRep* a, LocationID x, LocationID loc);
 Stack* shortestPathDrac (GraphRep* a, LocationID x, LocationID loc);
-
+int shortestDistanceDrac (GraphRep* a, LocationID x, LocationID loc);
 #endif

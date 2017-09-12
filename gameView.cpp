@@ -1,6 +1,6 @@
 //#include "game.h"
 #include "gameView.h"
-//#include "gameController.h"
+//#include "gameController.h"FSCORE
 #include <assert.h>
 //#include "map.h"
 //#include "trail.h"
@@ -21,7 +21,7 @@ using namespace std;
 // };
 PlaceType getPlaceTypeDoubleBack (Queue* a, int db);
 
-GameView newGameView(char* pastPlays, PlayerMessage messages[]) {
+GameView newGameView(string pastPlays, PlayerMessage messages[]) {
 
     GameView a = new gameView;
     GraphRep* m = newGraph(NUM_MAP_LOCATIONS);
@@ -43,34 +43,27 @@ GameView newGameView(char* pastPlays, PlayerMessage messages[]) {
      }
 
     a->huntTrail = new Queue*[NUM_PLAYERS];
-    a->trap = new Queue;
 
     for (int i = 0; i<NUM_PLAYERS; i++) {
         a->huntTrail[i] = newQueue (TRAIL_SIZE);
 
         for (int j = 0; j<TRAIL_SIZE; j++) {
-            pushQueue (a->huntTrail[i], NOWHERE, -1);
+            pushQueue (a->huntTrail[i], UNKNOWN_LOCATION, -1, -1, -1);
         }
-    }
-
-    for (int i = 0; i<TRAIL_SIZE; i++) {
-        pushQueue(a->trap, NO_ENCOUNTER, -1);
     }
 
     int i = 0;
     int chance = 0;
     //PlayerID a->current = 0;
-    int n = strlen(pastPlays);
+    int n = (pastPlays).length();
     int r = n/8;
 
-    while (chance != r) {
+    while (chance <= r) {
 
-        //cout << "current player " << a->current << '\n';
         if (i%8 == 0) {
 
             if (pastPlays[i] == 'G') {
                 a->current = PLAYER_LORD_GODALMING;
-                a->round = a->round + 1;
             }
 
             else if (pastPlays[i] == 'S') {a->current = PLAYER_DR_SEWARD; }
@@ -78,6 +71,7 @@ GameView newGameView(char* pastPlays, PlayerMessage messages[]) {
             else if (pastPlays[i] == 'M') {a->current = PLAYER_MINA_HARKER; }
             else if (pastPlays[i] == 'D') {a->current = PLAYER_DRACULA ;
                 a->score = a->score - SCORE_LOSS_DRACULA_TURN;
+                a->round = a->round + 1;
             }
             i++ ;
         }
@@ -94,18 +88,18 @@ GameView newGameView(char* pastPlays, PlayerMessage messages[]) {
 
                 if (strcmp("S?",c) == 0) {
                     a->location[PLAYER_DRACULA] = SEA_UNKNOWN;
-                    pushQueue(a->huntTrail[PLAYER_DRACULA], SEA_UNKNOWN, SEA);
+                    pushQueue(a->huntTrail[PLAYER_DRACULA], SEA_UNKNOWN, SEA, 0, 0);
                     bloodLossSea (a->health);
                 }
 
                 else if (strcmp("C?",c) == 0) {
                     a->location[PLAYER_DRACULA] = CITY_UNKNOWN;
-                    pushQueue(a->huntTrail[PLAYER_DRACULA], CITY_UNKNOWN, LAND);
+                    pushQueue(a->huntTrail[PLAYER_DRACULA], CITY_UNKNOWN, LAND, 0, 0);
                 }
 
                 else if (strcmp("HI",c) == 0) {
                     a->location[PLAYER_DRACULA] = HIDE;
-                    pushQueue(a->huntTrail[PLAYER_DRACULA], HIDE, UNKNOWN);
+                    pushQueue(a->huntTrail[PLAYER_DRACULA], HIDE, UNKNOWN, 0, 0);
                 }
 
                 else if (strcmp("D1",c) == 0) {
@@ -115,8 +109,9 @@ GameView newGameView(char* pastPlays, PlayerMessage messages[]) {
                     if (p == SEA) {
                         bloodLossSea (a->health);
                     }
-                    pushQueue(a->huntTrail[PLAYER_DRACULA], DOUBLE_BACK_1, p);
+                    pushQueue(a->huntTrail[PLAYER_DRACULA], DOUBLE_BACK_1, p, 0, 0);
                 }
+
                 else if (strcmp("D2",c) == 0) {
                     a->location[PLAYER_DRACULA] = DOUBLE_BACK_2;
                     PlaceType p = getPlaceTypeDoubleBack (a->huntTrail[PLAYER_DRACULA], 2);
@@ -124,7 +119,7 @@ GameView newGameView(char* pastPlays, PlayerMessage messages[]) {
                     if (p == SEA) {
                         bloodLossSea (a->health);
                     }
-                    pushQueue(a->huntTrail[PLAYER_DRACULA], DOUBLE_BACK_2, p);
+                    pushQueue(a->huntTrail[PLAYER_DRACULA], DOUBLE_BACK_2, p, 0, 0);
                 }
                 else if (strcmp("D3",c) == 0) {
                     a->location[PLAYER_DRACULA] = DOUBLE_BACK_3;
@@ -133,7 +128,7 @@ GameView newGameView(char* pastPlays, PlayerMessage messages[]) {
                     if (p == SEA) {
                         bloodLossSea (a->health);
                     }
-                    pushQueue(a->huntTrail[PLAYER_DRACULA], DOUBLE_BACK_3, p);
+                    pushQueue(a->huntTrail[PLAYER_DRACULA], DOUBLE_BACK_3, p, 0, 0);
                 }
                 else if (strcmp("D4",c) == 0) {
                     a->location[PLAYER_DRACULA] = DOUBLE_BACK_4;
@@ -142,7 +137,7 @@ GameView newGameView(char* pastPlays, PlayerMessage messages[]) {
                     if (p == SEA) {
                         bloodLossSea (a->health);
                     }
-                    pushQueue(a->huntTrail[PLAYER_DRACULA], DOUBLE_BACK_4, p);
+                    pushQueue(a->huntTrail[PLAYER_DRACULA], DOUBLE_BACK_4, p, 0, 0);
                 }
                 else if (strcmp("D5",c) == 0) {
                     a->location[PLAYER_DRACULA] = DOUBLE_BACK_5;
@@ -151,18 +146,18 @@ GameView newGameView(char* pastPlays, PlayerMessage messages[]) {
                     if (p == SEA) {
                         bloodLossSea (a->health);
                     }
-                    pushQueue(a->huntTrail[PLAYER_DRACULA], DOUBLE_BACK_5, p);
+                    pushQueue(a->huntTrail[PLAYER_DRACULA], DOUBLE_BACK_5, p, 0, 0);
                 }
 
                 else if (strcmp("TP",c) == 0) {
                     a->location[PLAYER_DRACULA] = TELEPORT;
-                    pushQueue(a->huntTrail[PLAYER_DRACULA], TELEPORT, LAND);
+                    pushQueue(a->huntTrail[PLAYER_DRACULA], TELEPORT, LAND, 0, 0);
                     bloodGainCastle (a->health);
                 }
 
                 else if (strcmp("CD",c) == 0) {
                     a->location[PLAYER_DRACULA] =  CASTLE_DRACULA;
-                    pushQueue(a->huntTrail[PLAYER_DRACULA], CASTLE_DRACULA, LAND);
+                    pushQueue(a->huntTrail[PLAYER_DRACULA], CASTLE_DRACULA, LAND, 0, 0);
                     bloodGainCastle (a->health);
                 }
 
@@ -173,7 +168,7 @@ GameView newGameView(char* pastPlays, PlayerMessage messages[]) {
                         if (strcmp(getAbbrev(k),c) == 0) {
                             //cout << "entered\n";
                             a->location[a->current] = k;
-                            pushQueue (a->huntTrail[a->current], k, getPlaceType(k));
+                            pushQueue (a->huntTrail[a->current], k, getPlaceType(k), 0, 0);
 
                             if (getPlaceType (k) == SEA) {
                                 bloodLossSea (a->health);
@@ -188,13 +183,12 @@ GameView newGameView(char* pastPlays, PlayerMessage messages[]) {
                 for (int k=0; k<NUM_MAP_LOCATIONS; k++) {
 
                     if (strcmp(getAbbrev(k),c) == 0) {
-                        //cout << "entered\n";
                         if (k == a->location[a->current]) {
                             lifeGainRest (a->current, a->health);
                         }
 
                         a->location[a->current] = k;
-                        pushQueue (a->huntTrail[a->current], k, getPlaceType(k));
+                        pushQueue (a->huntTrail[a->current], k, getPlaceType(k), -1, -1);
                         break;
                     }
                 }
@@ -203,7 +197,6 @@ GameView newGameView(char* pastPlays, PlayerMessage messages[]) {
         }
 
         else if (i%8 == 3) {
-            //cout << "ok " << pastPlays[i] << '\n';
             if (pastPlays[i] == 'T') {
                 if (a->current != PLAYER_DRACULA) {
                     lifeLossTrap (a->current, a->health);
@@ -215,7 +208,8 @@ GameView newGameView(char* pastPlays, PlayerMessage messages[]) {
                 }
 
                 else if (a->current == PLAYER_DRACULA) {
-                    pushQueue(a->trap,TRAP,-1);
+                    QueueNode* add = a->huntTrail[a->current]->end;
+                    add->nT = add->nT + 1;
                 }
             }
 
@@ -240,13 +234,16 @@ GameView newGameView(char* pastPlays, PlayerMessage messages[]) {
         else if (i%8 == 4) {
             if (pastPlays[i] == 'V') {
                 if (a->current != PLAYER_DRACULA) {
-                    popQueue (a->trap);
+                    QueueNode* add = getTrailElement (a, a->location[a->current]);
+                    add->nV = add->nV - 1;
                 }
 
                 else if (a->current == PLAYER_DRACULA) {
-                    pushQueue (a->trap,VAMPIRE,-1);
+                    QueueNode* add = a->huntTrail[a->current]->end;
+                    add->nV = add->nV + 1;
                 }
             }
+
             else if (pastPlays[i] == 'D') {
 
                 if (a->current != PLAYER_DRACULA) {
@@ -269,7 +266,7 @@ GameView newGameView(char* pastPlays, PlayerMessage messages[]) {
             if (pastPlays[i] == 'D') {
 
                 if (a->current != PLAYER_DRACULA) {
-                    cout << "executed " << a->current << endl;
+                    //cout << "executed " << a->current << endl;
                     lifeLossDrac (a->current, a->health);
                     bloodLossHunter (a->health);
 
@@ -282,11 +279,11 @@ GameView newGameView(char* pastPlays, PlayerMessage messages[]) {
             }
 
             else if (pastPlays[i] == 'M') {
-                popQueue (a->trap);
+                a->huntTrail[PLAYER_DRACULA]->start->nT = a->huntTrail[PLAYER_DRACULA]->start->nT - 1;
             }
 
             else if (pastPlays[i] == 'V') {
-                popQueue (a->trap);
+                a->huntTrail[PLAYER_DRACULA]->start->nV = a->huntTrail[PLAYER_DRACULA]->start->nV - 1;
                 a->score = a->score - SCORE_LOSS_VAMPIRE_MATURES;
             }
             i++;
@@ -308,9 +305,7 @@ GameView newGameView(char* pastPlays, PlayerMessage messages[]) {
     return a;
 }
 
-//
 // char pastPlays[] = "GMN.... SPL.... HAM.... MPA.... DC?.V.. GLV.... SLO.... HNS.... MST.... DC?T... GIR.... SPL.... HAO.... MZU.... DCDT... GSW.... SLO.... HNS.... MFR.... DC?T... GLV.... SPL.... HAO.... MZU.... DC?T... GSW.... SLO.... HNS.... " ;
-
 
 void disposeGameView(GameView toBeDeleted) {
     assert (toBeDeleted != NULL);
@@ -345,17 +340,17 @@ LocationID getLocation(GameView currentView, PlayerID player) {
 void getHistory(GameView currentView, PlayerID player, LocationID trail[TRAIL_SIZE]) {
 
     QueueNode* add = currentView->huntTrail[player]->start;
-    int i = TRAIL_SIZE - 1;
+    int i = 0;
 
     while (add != NULL) {
 
         trail[i] = add->val;
         add = add->next;
-        i -- ;
+        i ++ ;
     }
 }
 
-LocationID *connectedLocations(GameView currentView, int *numLocations, LocationID from, PlayerID player, Round round1, int road, int rail, int sea) {
+LocationID* connectedLocations(GameView currentView, int *numLocations, LocationID from, PlayerID player, Round round1, int road, int rail, int sea) {
 
     graphNode* add = currentView->map->arr[from];
     Stack* a = newStack();
@@ -369,7 +364,14 @@ LocationID *connectedLocations(GameView currentView, int *numLocations, Location
     while (add != NULL) {
         if (road == TRUE) {
             if (add->mode == ROAD) {
-                pushStack (a,add->location);
+                if (player != PLAYER_DRACULA) {
+                    pushStack (a,add->location);
+                }
+                else {
+                    if (add->location != ST_JOSEPH_AND_ST_MARYS) {
+                        pushStack (a,add->location);
+                    }
+                }
             }
         }
 
@@ -473,4 +475,12 @@ PlaceType getPlaceTypeDoubleBack (Queue* a, int db) {
         count --;
     }
     return add->place;
+}
+
+QueueNode* getTrailElement (GameView currentView, LocationID location) {
+    return findNode (currentView->huntTrail[PLAYER_DRACULA], location);
+}
+
+GraphRep* getMap (GameView current) {
+    return current->map;
 }
