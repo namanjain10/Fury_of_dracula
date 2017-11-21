@@ -251,8 +251,6 @@ GraphRep* newGraph (int x) {
 	return a;
 }
 
-//https://www.facebook.com/photo.php?fbid=1902930216629430&set=a.1376126519309805.1073741825.100007374091871&type=3&source=11&referrer_profile_id=100007374091871
-
 void addLink (GraphRep* a, LocationID from, LocationID to, TransportID x) {
 
 	assert (a != NULL && validV(a,from) && validV(a,to));
