@@ -17,12 +17,13 @@ int sameEdge (GraphRep* a, LocationID from, LocationID to, TransportID x);
 // 	TransportID mode ;
 // 	graphNode* next;
 // };
-//
+
 // struct GraphRep {
 // 	int nV;
 // 	graphNode** arr;
 // };
 
+//constucts map according to the data provided
 void constMap (GraphRep* g) {
     //### RAIL Connections ###
 
@@ -232,34 +233,39 @@ void constMap (GraphRep* g) {
    addLink(g, ROME, TYRRHENIAN_SEA, BOAT);
 }
 
+// returns a new datatype graph
 GraphRep* newGraph (int x) {
 
 	GraphRep* a = new GraphRep;
 	assert (a!= NULL);
 
 	a->nV = x;
-	a->arr = new graphNode* [x];
+	a->arr = new graphNode* [x];     // array of pointers (graphNode)
+    assert (a->arr != NULL);
 
 	for (int i=0; i<x; i++) {
 
 		a->arr[i] = new graphNode;
-
-		a->arr[i]->location = i;
-		a->arr[i]->mode = 0;
-		a->arr[i]->next = NULL;
+        assert (a->arr[i] != NULL);
+		a->arr[i]->location = i;    // location id
+		a->arr[i]->mode = 0;        // mode is used when travelling (land, sea, train) initailly none
+		a->arr[i]->next = NULL;     // pointer to next connected node (linked list)
 	}
 	return a;
 }
 
+//adds links to the graph
 void addLink (GraphRep* a, LocationID from, LocationID to, TransportID x) {
 
 	assert (a != NULL && validV(a,from) && validV(a,to));
 
-    int q = sameEdge (a,from, to, x);
+    int q = sameEdge (a,from, to, x);   // checking if link is not repeated
 
     if (q == 1) {
 
         graphNode* f = new graphNode ;
+        assert (f!= NULL);
+
     	f->location = to;
     	f->mode = x;
     	f->next = NULL;
@@ -277,9 +283,11 @@ void addLink (GraphRep* a, LocationID from, LocationID to, TransportID x) {
     else {
         return ;
     }
-    addLink (a,to,from,x);
+
+    addLink (a,to,from,x);      // because it is undirected graph (symmetry)
 }
 
+// prints the graph
 void printGraph (GraphRep* g) {
 	graphNode* add;
 
@@ -293,10 +301,12 @@ void printGraph (GraphRep* g) {
 	}
 }
 
+// check the validity of nodes provided for connecting
 int validV (GraphRep* g, LocationID v) {
 	return (g != NULL && v >= 0 && v < g->nV);
 }
 
+// prints the locations connected to location x
 void printList (GraphRep* a, LocationID x) {
 
 	graphNode* add = a->arr[x];
@@ -308,12 +318,12 @@ void printList (GraphRep* a, LocationID x) {
 	cout << endl;
 }
 
+// to avoid repetition of edges (same mode as well)
 int sameEdge (GraphRep* a, LocationID from, LocationID to, TransportID x) {
 
     graphNode* add = a->arr[from];
 
     while (add != NULL) {
-
         if (add->location == to && add->mode == x) {
             return 0;
         }
@@ -326,7 +336,7 @@ int minimumDistanceHunter (GraphRep* a, LocationID x, LocationID y) {
 
     List* list = newList() ;
     Pqueue* queue = newPqueue() ;
-    
+
     cout << "x is " << x << endl;
     cout << "y is " << y << endl;
 
@@ -376,6 +386,7 @@ int minimumDistanceHunter (GraphRep* a, LocationID x, LocationID y) {
     return w->priority;
 }
 
+// returns the stack with shortest path from location x to location loc (shortest for hunter)
 Stack* shortestPathHunter (GraphRep* a, LocationID x, LocationID loc) {
 
     List* list = newList() ;
@@ -430,6 +441,7 @@ Stack* shortestPathHunter (GraphRep* a, LocationID x, LocationID loc) {
     return path;
 }
 
+// returns the stack with shortest path from location x to location loc (shortest for dracula)
 Stack* shortestPathDrac (GraphRep* a, LocationID x, LocationID loc) {
 
     List* list = newList() ;
@@ -464,7 +476,6 @@ Stack* shortestPathDrac (GraphRep* a, LocationID x, LocationID loc) {
 					if (checkPqueue(queue,add->location, add->mode) == 0 && checkList (list, add->location, add->mode) == 0) {
 						pushPqueue(queue, add->location, p + 2, add->mode, prev);
 	            	}
-
 	            	add = add->next;
 				}
 
@@ -472,7 +483,6 @@ Stack* shortestPathDrac (GraphRep* a, LocationID x, LocationID loc) {
 					add = add->next;
 				}
         	}
-
 			else {
 				add = add->next;
 			}
@@ -507,6 +517,7 @@ Stack* shortestPathDrac (GraphRep* a, LocationID x, LocationID loc) {
     return path;
 }
 
+// returns the distance from location x to location loc (shortest distance for dracula)
 int shortestDistanceDrac (GraphRep* a, LocationID x, LocationID loc) {
 
     Stack* path = shortestPathDrac (a, x, loc);
@@ -524,26 +535,32 @@ int shortestDistanceDrac (GraphRep* a, LocationID x, LocationID loc) {
     return c;
 }
 
+// dracula health lost because of encounter with hunter
 void bloodLossHunter (int* health) {
     health[PLAYER_DRACULA] = health[PLAYER_DRACULA] - LIFE_LOSS_HUNTER_ENCOUNTER;
 }
 
+// dracula health loss going to sea
 void bloodLossSea (int* health) {
     health[PLAYER_DRACULA] = health[PLAYER_DRACULA] - LIFE_LOSS_SEA;
 }
 
+//health gain of dracula at castle dracula
 void bloodGainCastle (int* health) {
     health[PLAYER_DRACULA] = health[PLAYER_DRACULA] + LIFE_GAIN_CASTLE_DRACULA;
 }
 
+// hunter health lost because of trap
 void lifeLossTrap (PlayerID x, int* health) {
     health[x] = health[x] - LIFE_LOSS_TRAP_ENCOUNTER;
 }
 
+// hunter health lost because of encounter with dracula
 void lifeLossDrac (PlayerID x, int* health) {
     health[x] = health[x] - LIFE_LOSS_DRACULA_ENCOUNTER;
 }
 
+// hunter health gain by rest
 void lifeGainRest (PlayerID x,int* health) {
     health[x] = health[x] + LIFE_GAIN_REST;
 }

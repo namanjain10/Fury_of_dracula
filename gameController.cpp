@@ -252,7 +252,7 @@ void makeMove (PlayerID player, LocationID loc,  gameData* data) {
         int v = data->dracTrail->start->nV;
 
         printQueue (data->dracTrail);
-cout << "ok done\n";
+        cout << "ok done\n";
         if (trap == TRAP) {
             pushQueue (data->dracTrail, loc, getPlaceType(loc), 1, 0);
         }
@@ -260,7 +260,7 @@ cout << "ok done\n";
         else if (trap == VAMPIRE) {
             pushQueue (data->dracTrail, loc, getPlaceType(loc), 0, 1);
         }
-cout << "ok done\n";
+        cout << "ok done\n";
         char* hu = new char[8];
         char* d = new char[8];
 
@@ -316,7 +316,7 @@ cout << "ok done\n";
             }
         }
 
-cout << "ok done\n";
+        cout << "ok done\n";
         data->location[PLAYER_DRACULA] = loc;
 
         if (trap == TRAP) {
@@ -328,7 +328,7 @@ cout << "ok done\n";
             strcat(hu,".");
             strcat(d,".");
         }
-cout << "ok done\n";
+        cout << "ok done\n";
         if (trap == VAMPIRE) {
             strcat(hu,"V");
             strcat(d,"V");
@@ -338,7 +338,7 @@ cout << "ok done\n";
             strcat(hu,".");
             strcat(d,".");
         }
-cout << "ok done\n";
+        cout << "ok done\n";
         printQueue (data->dracTrail);
 
         if (t > 0) {
@@ -356,7 +356,7 @@ cout << "ok done\n";
             strcat(hu,".");
             strcat(d,".");
         }
-cout << "ok done\n";
+        cout << "ok done\n";
         strcat(hu,". ");
         strcat(d,". ");
 
@@ -506,6 +506,7 @@ int inTrail (Queue* a, LocationID loc) {
     return -1;
 }
 
+//returns first letter to be passed to view
 string getFirstLetter (PlayerID player) {
     if (player == PLAYER_LORD_GODALMING) {
         return "G";
@@ -648,6 +649,7 @@ bool checkDoubleBack (Queue* a) {
     return TRUE;
 }
 
+// returns if game should continue or not
 bool gameContinue (gameData* data) {
     return (data->health[PLAYER_DRACULA] > 0 && data->score > 0);
 }

@@ -1,8 +1,4 @@
 // Globals.h ... global game definitions for Fury of Dracula
-// By: Mina Harker
-// Date: 22 September 2014
-// Version: 1.0
-// Do not alter this file yourself.  You do not submit this file.
 
 #ifndef GLOBALS_H
 #define GLOBALS_H

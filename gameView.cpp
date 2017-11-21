@@ -19,8 +19,10 @@ using namespace std;
 // PlayerID current;
 // Trail** huntTrail;
 // };
+
 PlaceType getPlaceTypeDoubleBack (Queue* a, int db);
 
+// newGameView() creates a new game view to summarise the current state of the game.
 GameView newGameView(string pastPlays, PlayerMessage messages[]) {
 
     GameView a = new gameView;
@@ -307,36 +309,43 @@ GameView newGameView(string pastPlays, PlayerMessage messages[]) {
 
 // char pastPlays[] = "GMN.... SPL.... HAM.... MPA.... DC?.V.. GLV.... SLO.... HNS.... MST.... DC?T... GIR.... SPL.... HAO.... MZU.... DCDT... GSW.... SLO.... HNS.... MFR.... DC?T... GLV.... SPL.... HAO.... MZU.... DC?T... GSW.... SLO.... HNS.... " ;
 
+//disposeGameView() frees all memory previously allocated for the GameView toBeDeleted. toBeDeleted should not be accessed after the call.
 void disposeGameView(GameView toBeDeleted) {
     assert (toBeDeleted != NULL);
     delete toBeDeleted;
 }
 
+// Get the current round
 Round getRound(GameView currentView) {
     assert (currentView != NULL);
     return currentView->round;
 }
 
+// Get the id of current player - ie whose turn is it?
 PlayerID getCurrentPlayer(GameView currentView) {
     assert (currentView != NULL);
     return currentView->current;
 }
 
+// Get the current score
 int getScore(GameView currentView) {
     assert (currentView != NULL);
     return currentView->score;
 }
 
+// Get the current health points for a given player
 int getHealth(GameView currentView, PlayerID player) {
     assert (currentView != NULL);
     return currentView->health[player];
 }
 
+// Get the current location id of a given player
 LocationID getLocation(GameView currentView, PlayerID player) {
     assert (currentView != NULL);
     return currentView->location[player];
 }
 
+// Fills the trail array with the location ids of the last 6 turns for the given player
 void getHistory(GameView currentView, PlayerID player, LocationID trail[TRAIL_SIZE]) {
 
     QueueNode* add = currentView->huntTrail[player]->start;
@@ -350,6 +359,7 @@ void getHistory(GameView currentView, PlayerID player, LocationID trail[TRAIL_SI
     }
 }
 
+// connectedLocations() returns an array of LocationID that represent all locations that are connected to the given LocationID.
 LocationID* connectedLocations(GameView currentView, int *numLocations, LocationID from, PlayerID player, Round round1, int road, int rail, int sea) {
 
     graphNode* add = currentView->map->arr[from];
@@ -465,6 +475,7 @@ LocationID* connectedLocations(GameView currentView, int *numLocations, Location
     return loc;
 }
 
+
 PlaceType getPlaceTypeDoubleBack (Queue* a, int db) {
 
     QueueNode* add = a->start;
@@ -477,10 +488,12 @@ PlaceType getPlaceTypeDoubleBack (Queue* a, int db) {
     return add->place;
 }
 
+
 QueueNode* getTrailElement (GameView currentView, LocationID location) {
     return findNode (currentView->huntTrail[PLAYER_DRACULA], location);
 }
 
+// returns the map
 GraphRep* getMap (GameView current) {
     return current->map;
 }

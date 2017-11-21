@@ -133,6 +133,7 @@ struct GraphRep {
 	int nV;
 	graphNode** arr;
 };
+
 int minimumDistanceHunter (GraphRep* a, LocationID x, LocationID y);
 void bloodLossHunter (int* health);
 void bloodLossSea (int* health);
