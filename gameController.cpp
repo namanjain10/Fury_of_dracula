@@ -34,7 +34,6 @@ bool checkHide (Queue* a);
 bool checkDoubleBack (Queue* a);
 QueueNode* getTrailElement (Queue* currentView, LocationID location);
 
-
 QueueNode* getTrailElement (Queue* currentView, LocationID location) {
     return findNode (currentView, location);
 }
