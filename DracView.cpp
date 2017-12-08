@@ -4,6 +4,7 @@
 #include "gameView.h"
 #include "DracView.h"
 #include "places.h"
+#include <ctime>
 
 using namespace std;
 
@@ -113,7 +114,8 @@ int minDist (GraphRep* map, LocationID to, LocationID* hunterLoc) {
 }
 
 LocationID initDrac () {
-
+	
+	srand((int)time(0));
     LocationID p = rand() % 70;
     while (getPlaceType(p) != LAND) {
         p = rand() % 70;

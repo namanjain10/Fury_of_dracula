@@ -4,26 +4,6 @@
 
 using namespace std;
 
-// int main() {
-//
-//     Pqueue* a = newPqueue();
-//     PqueueNode* t ;
-//
-//     push(a,5,5);
-//     push(a,6,3);
-//     push(a,7,6);
-//     push(a,8,4);
-//     push(a,5,1);
-//     push(a,6,9);
-//     push(a,7,7);
-//
-//     t = pop(a);
-//     cout << t->val << " " << t->priority << endl;
-//     print(a);
-//
-//     return 0;
-// }
-
 Pqueue* newPqueue () {
     Pqueue* a = new Pqueue;
     a->start = NULL;
