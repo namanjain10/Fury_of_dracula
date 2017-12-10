@@ -367,6 +367,8 @@ LocationID* connectedLocations(GameView currentView, int *numLocations, Location
     *numLocations = 0;
     int steps = (round1 + player)%4;
 
+    cout << "from " << from << '\n';
+
     pushStack (a,from);
     graphNode* b;
     graphNode* c;
@@ -379,6 +381,7 @@ LocationID* connectedLocations(GameView currentView, int *numLocations, Location
                 }
                 else {
                     if (add->location != ST_JOSEPH_AND_ST_MARYS) {
+                        cout << "pushing road " << add->location << "\n";
                         pushStack (a,add->location);
                     }
                 }
@@ -387,6 +390,7 @@ LocationID* connectedLocations(GameView currentView, int *numLocations, Location
 
         if (sea == TRUE) {
             if (add->mode == BOAT) {
+                cout << "pushing boat " << add->location << "\n";
                 pushStack (a,add->location);
             }
         }

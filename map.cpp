@@ -337,29 +337,29 @@ int minimumDistanceHunter (GraphRep* a, LocationID x, LocationID y) {
     List* list = newList() ;
     Pqueue* queue = newPqueue() ;
 
-    cout << "x is " << x << endl;
-    cout << "y is " << y << endl;
+    //cout << "x is " << x << endl;
+    //cout << "y is " << y << endl;
 
-    cout << "location " << a->arr[x]->location << endl;
-    cout << "mode " << a->arr[x]->mode << endl;
+    //cout << "location " << a->arr[x]->location << endl;
+    //cout << "fault\n";
+    //cout << "mode " << a->arr[x]->mode << endl;
 
 	pushPqueue(queue, a->arr[x]->location, 0, a->arr[x]->mode, -1);
-    cout << "ok mid\n";
+    //cout << "ok mid\n";
 
     graphNode* add = a->arr[x]->next;
-    cout << "ok mid\n";
+    //cout << "ok mid\n";
 
     int p = 0;
     PqueueNode* w;
-    cout << "ok mid\n";
+    //cout << "ok mid\n";
 
     int count = 0;
-    cout << "ok mid\n";
+    //cout << "ok mid\n";
 
     while (count != a->nV) {
 
-        cout << "entering loop minimumDistanceHunter\n";
-
+        //cout << "entering loop minimumDistanceHunter\n";
         while (add != NULL) {
 
             if (checkPqueue(queue,add->location, add->mode) == 0 && checkList (list, add->location, add->mode) == 0) {
@@ -381,7 +381,7 @@ int minimumDistanceHunter (GraphRep* a, LocationID x, LocationID y) {
         pushList(list, w->val, w->priority, w->mode, -1);
         count++;
     }
-    cout << "ok done\n";
+    //cout << "ok done\n";
 
     return w->priority;
 }

@@ -93,15 +93,11 @@ GraphRep* giveMeMap (DracView currentView) {
 
 int minDist (GraphRep* map, LocationID to, LocationID* hunterLoc) {
 
-    cout << "entered min dist\n";
-
     LocationID dist[NUM_PLAYERS-1];
 
     for (int i=0; i<NUM_PLAYERS-1; i++) {
         dist[i] = minimumDistanceHunter (map, to, hunterLoc[i]);
     }
-
-    cout << "in mid\n";
 
     int min = dist[0];
 
@@ -114,7 +110,7 @@ int minDist (GraphRep* map, LocationID to, LocationID* hunterLoc) {
 }
 
 LocationID initDrac () {
-	
+
 	srand((int)time(0));
     LocationID p = rand() % 70;
     while (getPlaceType(p) != LAND) {

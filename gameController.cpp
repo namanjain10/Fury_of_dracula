@@ -71,10 +71,9 @@ gameData* newGameData () {
 }
 
 void makeMove (PlayerID player, LocationID loc,  gameData* data) {
-    cout << "entered move\n";
 
     if (data->location[player] == loc) {
-        //cout << "same\n" << endl;
+
         data->hide[player] = 1;
         lifeGainRest (player, data->health);
 
@@ -104,8 +103,9 @@ void makeMove (PlayerID player, LocationID loc,  gameData* data) {
     if (player == PLAYER_LORD_GODALMING) {
         data->round ++;
     }
-    cout << "ordered me " << loc << endl;
     assert (isValid (data, loc, player)) ;  // to be made return boolean if move is valid
+
+    cout << "valid move\n";
 
     if (player != PLAYER_DRACULA) {
 
@@ -140,7 +140,6 @@ void makeMove (PlayerID player, LocationID loc,  gameData* data) {
         }
 
         else {
-            cout << "entered in else q is " << q << "\n";
             data->pastPlaysHunter = revealDracPos (data->pastPlaysHunter, data->dracTrail, player, q);
             //cout << "first\n";
 
@@ -232,10 +231,7 @@ void makeMove (PlayerID player, LocationID loc,  gameData* data) {
     }
 
     else {
-        cout << "entered drac\n";
-
         Encounter trap;
-
         if (data->round %13 == 0) {
             trap = VAMPIRE;
         }
@@ -244,14 +240,10 @@ void makeMove (PlayerID player, LocationID loc,  gameData* data) {
             trap = TRAP;
         }
 
-
-        cout << "lets \n";
         int t = data->dracTrail->start->nT;
-        cout << "ok done\n";
         int v = data->dracTrail->start->nV;
 
         printQueue (data->dracTrail);
-        cout << "ok done\n";
         if (trap == TRAP) {
             pushQueue (data->dracTrail, loc, getPlaceType(loc), 1, 0);
         }
@@ -259,7 +251,6 @@ void makeMove (PlayerID player, LocationID loc,  gameData* data) {
         else if (trap == VAMPIRE) {
             pushQueue (data->dracTrail, loc, getPlaceType(loc), 0, 1);
         }
-        cout << "ok done\n";
         char* hu = new char[8];
         char* d = new char[8];
 
@@ -267,9 +258,11 @@ void makeMove (PlayerID player, LocationID loc,  gameData* data) {
         strcpy (d,"D");
 
         int q = inTrail (data->dracTrail, loc);
+        cout << "present in trail " << q << "\n";
         q = TRAIL_SIZE - q ;
 
-        if (q == 0) {
+        if (q == 6) {
+            cout << "oops entered \n";
             strcat (d,"HI");
             strcat (hu,"C?");
         }
@@ -315,7 +308,6 @@ void makeMove (PlayerID player, LocationID loc,  gameData* data) {
             }
         }
 
-        cout << "ok done\n";
         data->location[PLAYER_DRACULA] = loc;
 
         if (trap == TRAP) {
@@ -327,7 +319,6 @@ void makeMove (PlayerID player, LocationID loc,  gameData* data) {
             strcat(hu,".");
             strcat(d,".");
         }
-        cout << "ok done\n";
         if (trap == VAMPIRE) {
             strcat(hu,"V");
             strcat(d,"V");
@@ -337,7 +328,6 @@ void makeMove (PlayerID player, LocationID loc,  gameData* data) {
             strcat(hu,".");
             strcat(d,".");
         }
-        cout << "ok done\n";
         printQueue (data->dracTrail);
 
         if (t > 0) {
@@ -355,7 +345,6 @@ void makeMove (PlayerID player, LocationID loc,  gameData* data) {
             strcat(hu,".");
             strcat(d,".");
         }
-        cout << "ok done\n";
         strcat(hu,". ");
         strcat(d,". ");
 
@@ -380,6 +369,8 @@ bool isValid (gameData* data, LocationID to, PlayerID player) {
     int r = 0;
     int q = inTrail (data->dracTrail, to);
 
+    cout << "in trail " << q << '\n';
+
     if (player == PLAYER_DRACULA) {
         cout << "Dracula\n";
 
@@ -390,21 +381,28 @@ bool isValid (gameData* data, LocationID to, PlayerID player) {
             }
 
             else {
+                cout << "problem\n";
                 return (checkHide (data->dracTrail));
             }
         }
 
         if (q != -1) {
+            cout << "entered DOUBLE_BACK\n";
             return (checkDoubleBack (data->dracTrail));
         }
+
+        cout << "please\n";
 
         while (add != NULL) {
             if (add->location == to) {
                 r = 1;
                 break;
             }
+            cout << "ok\n";
             add = add->next;
         }
+
+        cout << "now what \n";
 
         if (r == 0) {
             cout << "cant find path\n";
@@ -425,7 +423,7 @@ bool isValid (gameData* data, LocationID to, PlayerID player) {
 
     else {
         cout << "player\n";
-        //cout << "is it??\n";
+
         int u = (data->round + player)%4 ;
         //int u = (score + player)%4 ;
         cout << u << endl;
@@ -611,40 +609,50 @@ string revealDracPos (string a, Queue* b, PlayerID player, int n) {
 }
 
 bool checkHide (Queue* a) {
+    cout << "entered checkHide\n";
     QueueNode* add = a->start->next;
     QueueNode* prev = NULL;
     int hide = 0;
+    cout << "initialized\n";
 
     while (add != NULL) {
 
         if (prev->val == add->val) {
             cout << "cant hide twice in trail\n";
+            cout << "exit True\n";
             return FALSE;
         }
 
         prev = add;
         add = add->next;
+        cout << "added to next\n";
     }
-
+    cout << "exit True\n";
     return TRUE;
 }
 
 bool checkDoubleBack (Queue* a) {
+    cout << "entered checkDoubleBack\n";
     QueueNode* add = a->start->next;
+    cout << "initial add " << add->val << endl;
     QueueNode* prev = add;
+    cout << "initialized\n";
 
     while (add != NULL) {
         prev = add->next->next;
+        cout << "prev " << prev->val << endl;
         while (prev != NULL) {
             if (prev->val == add->val && prev->val != NOWHERE) {
                 cout << "cant double back twice\n";
+                cout << "exit True\n";
                 return FALSE;
             }
             prev = prev->next;
         }
         add = add->next;
+        cout << "added to next\n";
     }
-
+    cout << "exit True\n";
     return TRUE;
 }
 
@@ -652,3 +660,88 @@ bool checkDoubleBack (Queue* a) {
 bool gameContinue (gameData* data) {
     return (data->health[PLAYER_DRACULA] > 0 && data->score > 0);
 }
+
+
+
+
+// Dracula Trail : -1 < -1 < -1 < -1 < 61 < 38 <
+// from 38
+// pushing boat 33
+// pushing road 61
+// pushing road 41
+// edges made 4
+// edges are 41
+// edges are 61
+// edges are 33
+// edges are 38
+// check
+// exit
+// exit
+// exit
+// exit
+// result given 38
+// in trail 6
+// Dracula
+// problem
+// entered checkHide
+// initialized
+// Segmentation fault (core dumped)
+
+
+// Dracula Trail : -1 < -1 < -1 < 20 < 26 < 17 <
+// view made
+// from 17
+// pushing road 34
+// pushing road 26
+// edges made 3
+// edges are 26
+// edges are 34
+// edges are 17
+// check
+// exit
+// exit
+// exit
+// result given 26
+// in trail 5
+// Dracula
+// entered DOUBLE_BACK
+// entered checkDoubleBack
+// initialized
+// added to next
+// added to next
+// added to next
+// added to next
+// Segmentation fault (core dumped)
+
+
+
+
+// Dracula Trail : -1 < -1 < -1 < -1 < 38 < 41 <
+// from 41
+// pushing road 39
+// pushing road 38
+// pushing road 22
+// edges made 4
+// edges are 22
+// edges are 38
+// edges are 39
+// edges are 41
+// check
+// exit
+// exit
+// exit
+// exit
+// result given 38
+// in trail 5
+// Dracula
+// entered DOUBLE_BACK
+// entered checkDoubleBack
+// initial add -1
+// initialized
+// prev -1
+// added to next
+// prev 38
+// added to next
+// prev 41
+// added to next
+// Segmentation fault (core dumped)

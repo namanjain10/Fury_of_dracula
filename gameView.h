@@ -1,7 +1,3 @@
-// GameView.h
-// Official Interface for GameViewADT
-// COMP1927 14s2
-
 #ifndef GAME_VIEW_H
 #define GAME_VIEW_H
 

@@ -1,7 +1,3 @@
-// HunterView.h
-// Official Interface for HunterViewADT
-// COMP1927 14s2
-
 #ifndef HUNTER_VIEW_H
 #define HUNTER_VIEW_H
 
